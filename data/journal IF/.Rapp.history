@@ -1,0 +1,1299 @@
+n <- 6
+m <- 10
+x <- 1:n
+A <- cbind(1, x[1]*x[-1], (m-x[1])*(m-x[-1]), x[1]*(m-x[-1])+x[-1]*(m-x[1]), x[1]+x[-1], 2*m-x[1]-x[-1])
+A
+rk(A)
+?rk
+library(Matrix)
+?rk
+rankMatrix(A)
+qr(A)
+n <- 10#
+m <- 10#
+x <- 1:n#
+#
+A <- cbind(1, x[1]*x[-1], (m-x[1])*(m-x[-1]), x[1]*(m-x[-1])+x[-1]*(m-x[1]), x[1]+x[-1], 2*m-x[1]-x[-1])#
+qr(A)$rank
+x <- 2
+?mvtnorm
+sigma2 <- matrix(0.5, p, p); diag(sigma2) <- rep(1,p)
+library(mvtnorm)
+fn <- function(x) max(abs(x))#
+p <- 10#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(0.5, p, p); diag(sigma2) <- rep(1,p)
+sigma1
+sigma2
+library(mvtnorm)#
+#
+fn <- function(x) max(abs(x))#
+p <- 10#
+n <- 1000#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(0.5, p, p); diag(sigma2) <- rep(1,p)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma1)#
+t1 <- apply(x, 1, fn)#
+q1 <- quantile(t1, prob=0.95)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma2)#
+t2 <- apply(x, 1, fn)#
+q2 <- quantile(t2, prob=0.95)#
+plot(density(t1))#
+lines(density(t2), col=2)#
+abline(v=q1)#
+abline(v=q2, col=2)
+n <- 10000
+library(mvtnorm)#
+#
+fn <- function(x) max(abs(x))#
+p <- 10#
+n <- 10000#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(0.5, p, p); diag(sigma2) <- rep(1,p)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma1)#
+t1 <- apply(x, 1, fn)#
+q1 <- quantile(t1, prob=0.95)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma2)#
+t2 <- apply(x, 1, fn)#
+q2 <- quantile(t2, prob=0.95)#
+plot(density(t1))#
+lines(density(t2), col=2)#
+abline(v=q1)#
+abline(v=q2, col=2)
+library(mvtnorm)#
+#
+fn <- function(x) max(abs(x))#
+p <- 10#
+n <- 10000#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(0.2, p, p); diag(sigma2) <- rep(1,p)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma1)#
+t1 <- apply(x, 1, fn)#
+q1 <- quantile(t1, prob=0.95)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma2)#
+t2 <- apply(x, 1, fn)#
+q2 <- quantile(t2, prob=0.95)#
+plot(density(t1))#
+lines(density(t2), col=2)#
+abline(v=q1)#
+abline(v=q2, col=2)
+library(mvtnorm)#
+#
+fn <- function(x) max(abs(x))#
+p <- 10#
+n <- 10000#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(0.8, p, p); diag(sigma2) <- rep(1,p)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma1)#
+t1 <- apply(x, 1, fn)#
+q1 <- quantile(t1, prob=0.95)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma2)#
+t2 <- apply(x, 1, fn)#
+q2 <- quantile(t2, prob=0.95)#
+plot(density(t1))#
+lines(density(t2), col=2)#
+abline(v=q1)#
+abline(v=q2, col=2)
+legend("topright", col=1:2, legend=c("uncorrelated","correlated"))
+legend("topright", col=1:2, legend=c("uncorrelated","correlated"),lty=1)
+library(mvtnorm)#
+#
+fn <- function(x) max(abs(x))#
+p <- 10#
+n <- 10000#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(-0.2, p, p); diag(sigma2) <- rep(1,p)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma1)#
+t1 <- apply(x, 1, fn)#
+q1 <- quantile(t1, prob=0.95)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma2)#
+t2 <- apply(x, 1, fn)#
+q2 <- quantile(t2, prob=0.95)#
+plot(density(t1), main="distribution of max-statistic")#
+lines(density(t2), col=2)#
+abline(v=q1)#
+abline(v=q2, col=2)#
+legend("topright", col=1:2, legend=c("uncorrelated","correlated"),lty=1)
+library(mvtnorm)#
+#
+fn <- function(x) max(abs(x))#
+p <- 10#
+n <- 10000#
+mu <- rep(0,p)#
+sigma1 <- diag(rep(1,p))#
+sigma2 <- matrix(0.5, p, p); diag(sigma2) <- rep(1,p)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma1)#
+t1 <- apply(x, 1, fn)#
+q1 <- quantile(t1, prob=0.95)#
+#
+set.seed(100)#
+x <- rmvnorm(n, mu, sigma2)#
+t2 <- apply(x, 1, fn)#
+q2 <- quantile(t2, prob=0.95)#
+plot(density(t1), main="distribution of max-statistic")#
+lines(density(t2), col=2)#
+abline(v=q1)#
+abline(v=q2, col=2)#
+legend("topright", col=1:2, legend=c("uncorrelated","correlated"),lty=1)
+library(METests)#
+#
+# set no of cores to be used#
+library(doMC)#
+library(foreach)#
+nocores <- detectCores()-(1-SAVE)#
+print(nocores)#
+#
+# load dgps#
+source("dgps.r")#
+#
+# load sim loops#
+source("mc.r")#
+#####################
+## RUN & EVALUATE ###
+#####################
+#
+## run simulation#
+set.seed(1090)#
+starting_time <- proc.time()#
+sc_sim <- simulation(nrep=1000, nobs=c(200,500), beta=seq(0,1,length=5), sd.eta=c(0.25,1), gammaZ=0.25, test=c("t", "DM", "GCM.bsplines", "GCM.squares"), a=NA, model=model, mfun=mfun, nocores=nocores)#
+# sc_sim <- simulation(nrep=10, nobs=100, beta=seq(0,1,length=5), sd.eta=c(0.2,0.5,1), gammaZ=1, test=c("t", "DM", "DM.mean", "DM.ind"), a=NA, model=model, mfun=mfun, nocores=nocores)#
+print((proc.time()-starting_time)[1])
+pnorm(1.96)
+pnorm(1.96,lower.tail=False)
+pnorm(1.96,lower.tail=FALSE)
+1-pnorm(1.96)
+rm(list = ls())
+as.logical("TRUE")
+f <- function(x) ifelse(x<0, x^2, ifelse(x>1, (x-1)^2, 0))
+xs <- seq(-2,2,length=100)
+plot(x,f(x), type="l")
+plot(xs,f(xs), type="l")
+n <- 100#
+nMC <- 1000#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))
+dim(X)
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))#
+rowMeans(X)#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))#
+rowMeans(X)
+n <- 100#
+nMC <- 1000#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))#
+rowMeans(X)#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.8,0.1,0.1))#
+rowMeans(X)
+n <- 1000#
+nMC <- 1000#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))#
+rowMeans(X)#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.8,0.1,0.1))#
+rowMeans(X)
+n <- 100#
+nMC <- 10000#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))#
+rowMeans(X)#
+#
+set.seed(1)#
+X <- rmultinom(nMC, n, c(0.8,0.1,0.1))#
+rowMeans(X)
+n <- 100#
+nMC <- 10000#
+#
+set.seed(10)#
+X <- rmultinom(nMC, n, c(0.1,0.1,0.8))#
+rowMeans(X)#
+#
+set.seed(10)#
+X <- rmultinom(nMC, n, c(0.8,0.1,0.1))#
+rowMeans(X)
+simpson <- function(a,b,n,f) {#
+	h <- (b-a)/n#
+	x <- seq(a,b,length.out=n+1)#
+	fx <- rep(0,n+1)#
+	for (i in 1:(n+1)) fx[i] <- f(x[i])#
+	coeff <- c(1,rep(c(4,2),(n-1)/2),4,1)#
+	return(h/3*sum(coeff*fx))#
+}#
+#
+bisect <- function(a, b, f, xtol, maxit=20) {		# bisection algorithm to find root of f in [a,b]#
+	stopifnot(f(a)*f(b)<=0)#
+#
+	if (a<b) { xl <- a; xu <- b; } else { xl <- b; xu <- a; }#
+	if (f(xl)<0) { incr <- TRUE; } else { incr <- FALSE; }#
+	it <- 1#
+	while((xu-xl > xtol) && it<maxit) {#
+		fx <- f((xu+xl)/2)#
+		if (fx==0) {#
+			xl <- (xu+xl)/2#
+			xu <- (xu+xl)/2#
+		} else {#
+			if (incr) {				#
+				if (fx > 0) { xu <- (xu+xl)/2; } else { xl <- (xu+xl)/2; }#
+			} else {#
+				if (fx > 0) { xl <- (xu+xl)/2; } else { xu <- (xu+xl)/2; }#
+			}#
+		}#
+		it <- it + 1#
+	}#
+	x <- (xu+xl)/2#
+	return(x)#
+}
+FGupta <- function(d,p) simpson(10, -10, 1000, function(u) pnorm(u+d)^(p-1)*dnorm(u))
+getFGuptaCrit <- function(p) {#
+    f <- function(d) (FGupta(d,p) - (1-alpha))^2#
+    return(f)#
+}
+alpha <- 0.05
+pgr <- 1:20
+FGupta <- function(d,p) simpson(10, -10, 1000, function(u) pnorm(u+d)^(p-1)*dnorm(u))#
+getFGuptaCrit <- function(p) {#
+    f <- function(d) (FGupta(d,p) - (1-alpha))^2#
+    return(f)#
+}
+fc <- getFGuptaCrit(2)
+dg <- seq(-3,3,length=100)
+plot(dgrid, fc(dgrid), type="l")
+plot(dg, fc(dg), type="l")
+fc(1)
+fc(dg)
+fc <- getFGuptaCrit(5)#
+dg <- seq(-3,3,length=100)#
+fcvals <- rep(NA, length(dg))#
+for (i in 1:length(dg)) fcvals[i] <- fc(dg[i])
+fcvals
+dg <- seq(-10,3,length=100)
+fcvals <- rep(NA, length(dg))
+for (i in 1:length(dg)) fcvals[i] <- fc(dg[i])
+fcvals
+dg <- seq(-100,3,length=100)
+fcvals <- rep(NA, length(dg))
+for (i in 1:length(dg)) fcvals[i] <- fc(dg[i])
+fcvals
+FGupta(0.9025000,5)
+dg <- seq(-3,3,length=1000)
+fcvals <- rep(NA, length(dg))
+for (i in 1:length(dg)) fcvals[i] <- fc(dg[i])
+plot(dg, fcvals, type="l")
+FGupta(2,2)
+FGupta(1,2)
+?pnorm
+function(u) pnorm(u+2)^(2-1)*dnorm(u)
+f <- function(u) pnorm(u+2)^(2-1)*dnorm(u)
+f(2)
+f(1)
+f(0)
+FGupta(2,2)
+alpha <- 0.05
+simpson <- function(a,b,n,f) {#
+	h <- (b-a)/n#
+	x <- seq(a,b,length.out=n+1)#
+	fx <- rep(0,n+1)#
+	for (i in 1:(n+1)) fx[i] <- f(x[i])#
+	coeff <- c(1,rep(c(4,2),(n-1)/2),4,1)#
+	return(h/3*sum(coeff*fx))#
+}#
+#
+bisect <- function(a, b, f, xtol, maxit=20) {		# bisection algorithm to find root of f in [a,b]#
+	stopifnot(f(a)*f(b)<=0)#
+#
+	if (a<b) { xl <- a; xu <- b; } else { xl <- b; xu <- a; }#
+	if (f(xl)<0) { incr <- TRUE; } else { incr <- FALSE; }#
+	it <- 1#
+	while((xu-xl > xtol) && it<maxit) {#
+		fx <- f((xu+xl)/2)#
+		if (fx==0) {#
+			xl <- (xu+xl)/2#
+			xu <- (xu+xl)/2#
+		} else {#
+			if (incr) {				#
+				if (fx > 0) { xu <- (xu+xl)/2; } else { xl <- (xu+xl)/2; }#
+			} else {#
+				if (fx > 0) { xl <- (xu+xl)/2; } else { xu <- (xu+xl)/2; }#
+			}#
+		}#
+		it <- it + 1#
+	}#
+	x <- (xu+xl)/2#
+	return(x)#
+}
+FGupta <- function(d,p) {#
+	fn <- function(u) pnorm(u+d)^(p-1)*dnorm(u)#
+	simpson(10, -10, 1000, fn)#
+}
+FGupta(2,2)
+FGupta <- function(d,p) {#
+	fn <- function(u) pnorm(u+d)^(p-1)*dnorm(u)#
+	simpson(-10, 10, 1000, fn)#
+}
+FGupta(2,2)
+FGupta <- function(d,p) {#
+	fn <- function(u) pnorm(u+d)^(p-1)*dnorm(u)#
+	simpson(-4, 4, 1000, fn)#
+}
+FGupta(2,2)
+getFGuptaCrit <- function(p) {#
+	f <- function(d) (FGupta(d,p) - (1-alpha))^2#
+	return(f)#
+}
+fc <- getFGuptaCrit(5)#
+dg <- seq(-3,3,length=1000)#
+fcvals <- rep(NA, length(dg))#
+for (i in 1:length(dg)) fcvals[i] <- fc(dg[i])
+plot(dg, fcvals, type="")
+plot(dg, fcvals, type="l")
+dg <- seq(-3,10,length=1000)
+fcvals <- rep(NA, length(dg))
+for (i in 1:length(dg)) fcvals[i] <- fc(dg[i])
+plot(dg, fcvals, type="l")
+fvals
+fcvals
+pgr <- 2:20
+FGupta <- function(d,p) {#
+    fn <- function(u) pnorm(u+d)^(p-1)*dnorm(u)#
+    simpson(10, -10, 1000, fn)#
+}#
+getFGuptaCrit <- function(p) {#
+    f <- function(d) (FGupta(d,p) - (1-alpha))^2#
+    return(f)#
+}#
+dsol <- function(p) {#
+    fc <- getFGuptaCrit(p)#
+    bisect(0,10,fc,0.001)#
+}#
+#
+dvals <- rep(NA, length(pgr))#
+for (j in pgr) dvals <- dsol(j)
+dvals
+pgr <- 2:20
+j<-2
+fc <- getFGuptaCrit(j)
+dvals[j] <- bisect(0,10,fc,0.001)
+fc(0)
+fc(10)
+j <- 5
+fc <- getFGuptaCrit(j)
+getFGuptaCrit <- function(p) {#
+    f <- function(d) (FGupta(d,p) - (1-alpha))#
+    return(f)#
+}
+pgr <- 2:20#
+alpha <- 0.05#
+#
+FGupta <- function(d,p) {#
+    fn <- function(u) pnorm(u+d)^(p-1)*dnorm(u)#
+    simpson(10, -10, 1000, fn)#
+}#
+getFGuptaCrit <- function(p) {#
+    f <- function(d) (FGupta(d,p) - (1-alpha))#
+    return(f)#
+}#
+#
+dsol <- rep(NA, length(pgr))#
+for (j in pgr) {#
+    fc <- getFGuptaCrit(j)#
+    dsol[j] <- bisect(0,10,fc,0.001)#
+}
+fc <- getFGuptaCrit(j)
+j
+fc(0)
+fc(10)
+fc(100)
+fc(2)
+fc(3)
+fc(4)
+fc(0.2)
+pgr <- 2:20#
+alpha <- 0.05#
+#
+FGupta <- function(d,p) {#
+    fn <- function(u) pnorm(u+d)^(p-1)*dnorm(u)#
+    simpson(-10, 10, 1000, fn)#
+}#
+getFGuptaCrit <- function(p) {#
+    f <- function(d) (FGupta(d,p) - (1-alpha))#
+    return(f)#
+}#
+#
+dsol <- rep(NA, length(pgr))
+j <- 2
+fc <- getFGuptaCrit(j)
+fc(0)
+fc(10)
+fc(100)
+dsol[j] <- bisect(0,10,fc,0.01)
+dsol
+for (j in 1:length(pgr)) {#
+    fc <- getFGuptaCrit(pgr[j])#
+    dsol[j] <- bisect(0,10,fc,0.01)#
+}
+dsol
+GuptaCoverage <- function(d,t) {#
+	fn <- function(u) (pnorm(u+d)-pnorm(u))^(t-1)*dnorm(u)#
+	t*simpson(-10, 10, 1000, fn)#
+}#
+#
+ptgr <- expand.grid(p=pgr, t=pgr)#
+CPU <- matrix(NA, length(pgr), length(pgr))#
+for (i in 1:nrow(ptgr)) CPU[ptgr$p[i],ptgr$t[i]] <- GuptaCoverage(dsol[ptgr$p[i]], ptgr$t[i])
+ptgr <- expand.grid(p=pgr, t=pgr)#
+CPU <- matrix(NA, length(pgr), length(pgr))#
+#
+for (i in 1:length(pgr)) {#
+    for (j in 1:length(pgr)) {#
+        CPU[i,j] <- GuptaCoverage(dsol[i], ptgr$t[j])       #
+    }#
+}
+CPU
+ind <- CPU>0.95
+contour(1:nrow(ind),1:ncol(ind), CPU, levels=seq(0.95,0.05,length=10),xlab="p",ylab="t", main=bquote("contour plot of " ~ CP^U~"(p,t)"))
+ptgr <- expand.grid(p=pgr, t=pgr)#
+CPU <- matrix(NA, length(pgr), length(pgr))#
+#
+for (i in 1:length(pgr)) {#
+    for (j in 1:length(pgr)) {#
+        CPU[i,j] <- GuptaCoverage(dsol[j], ptgr$t[i])       #
+    }#
+}
+ind <- CPU>0.95
+contour(1:nrow(ind),1:ncol(ind), CPU, levels=seq(0.95,0.05,length=10),xlab="p",ylab="t", main=bquote("contour plot of " ~ CP^U~"(p,t)"))
+plot(CPU)
+contour(CPU)
+for (i in 1:length(pgr)) {#
+    for (j in 1:length(pgr)) {#
+        CPU[i,j] <- GuptaCoverage(dsol[j], i)       #
+    }#
+}
+ind <- CPU>0.95
+contour(1:nrow(ind),1:ncol(ind), CPU, levels=seq(0.95,0.05,length=10),xlab="p",ylab="t", main=bquote("contour plot of " ~ CP^U~"(p,t)"))
+for (i in 1:length(pgr)) {#
+    for (j in 1:length(pgr)) {#
+        CPU[i,j] <- GuptaCoverage(dsol[i], j)       #
+    }#
+}
+ind <- CPU>0.95#
+#
+contour(1:nrow(ind),1:ncol(ind), CPU, levels=seq(0.95,0.05,length=10),xlab="p",ylab="t", main=bquote("contour plot of " ~ CP^U~"(p,t)"))
+X <- rnorm(10)
+X
+order(X, decreasing=TRUE)
+X[order(X, decreasing=TRUE)]
+thetahat <- X
+tmat <- matrix(rep(thetahat,p), ncol=p)
+tmatDiff <- thetahat - t(thetahat)
+p <- 10
+tmat <- matrix(rep(thetahat,p), ncol=p)
+tmatDiff <- thetahat - t(thetahat)
+tmatDiff
+tmat
+tmatDiff <- tmat - t(tmat)
+tmatDiff
+secondBest <- thetahat[order(thetahat, decreasing=TRUE)][2]
+thetahat
+secondBest
+epsilon <- 02
+epsilon <- 0.2
+Knhat <- thetahat <= secondBest + epsilon
+Knhat
+Tnj <- apply(tmatDiff[Knhat,], 2, max)
+Tnj
+tmatDiff
+tmatDiff[Knhat,]
+computeTnj <- function(x) {#
+            xmat <- matrix(rep(x,p), ncol=p)#
+            xmatDiff <- xmat - t(xmat)#
+            return(apply(xmatDiff[Knhat,], 2, max)  )#
+        }
+computeTnj(thetahat)
+R <- 15
+replicate(R, computeTnj(rnorm(p, 0, sigmahat)))
+replicate(R, computeTnj(sigmahat*rnorm(p)))
+sigmahat <- rep(1,p)
+replicate(R, computeTnj(sigmahat*rnorm(p)))
+studentized <- "SE"
+smat <- matrix(rep(sigmahat^2,p), ncol=p)#
+        computeTnj <- function(x) {#
+            xmat <- matrix(rep(x,p), ncol=p)#
+            xmatDiff <- xmat - t(xmat)#
+            if (studentized=="SE") xmatDiff <- xmatDiff / sqrt(smat+t(smat))#
+#
+            return(apply(xmatDiff[Knhat,], 2, max)  )#
+        }#
+        Tnj <- computeTnj(thetahat)
+tnj
+Tnj
+Tnj.sim <- replicate(R, computeTnj(sigmahat*rnorm(p)))
+Tnj.sim
+apply(Tnj.sim[S,], 2, max)
+S <- rep(TRUE,p)
+reject <- TRUE
+Tk <- apply(Tnj.sim[S,], 2, max)
+Tk
+length(Tk)
+cval <- quantile(Tk, prob=1-alpha)
+alpha<-0.05
+cval <- quantile(Tk, prob=1-alpha)
+cval
+any(Tnj[S] > cval)
+Tnj[S] > cval
+library(csranks)#
+attach(pisa)#
+library(ggplot2)#
+library(igraph)#
+source("csdiffmeans.r")
+thetahat <- reading_score
+sigmahat <- reading_se
+##remove NA data#
+thetahat <- thetahat[!is.na(thetahat)]#
+sigmahat <- sigmahat[!is.na(sigmahat)]#
+ranking <- order(thetahat, decreasing=TRUE)#
+thetahat.ordered <- thetahat[ranking]   #
+sigmahat.ordered <- sigmahat[ranking]#
+ranking <- order(thetahat, decreasing=TRUE)#
+thetahat.ordered <- thetahat[ranking]   #
+sigmahat.ordered <- sigmahat[ranking]
+res <- csdiffmeans(thetahat.ordered, sigmahat.ordered)
+res
+res <- csdiffmeans(thetahat.ordered, sigmahat.ordered, stepdown=FALSE)
+csdiffmeans
+thetahat.ordered
+sigmahat.ordered
+res <- csdiffmeans(thetahat.ordered, sigmahat.ordered, stepdown=FALSE)
+res
+library(MASS)#
+    library(doMC)#
+    library(abind)#
+    library(xtable)#
+    library(mvtnorm)#
+    library("lattice")#
+    library("latticeExtra")
+# -----------------------------------------------------------------------------------------------------------------#
+# methods based on CS for differences of means#
+# -----------------------------------------------------------------------------------------------------------------#
+    # ------------------- CS for differences of means#
+    ##
+    # INPUT:#
+    ##
+    # dat:      contain the data: either a matrix in which each column corresponds to a population or a vector in which case each entry is taken to be#
+    #           the sample mean of a population#
+    # sigmahat: set to NA in the case when dat is a matrix, otherwise should be the vector of estimated standard deviations of the populations' sample #
+    #           means in dat#
+    # alpha:    desired nominal coverage of the resulting confidence sets will be 1-alpha#
+    # R:        number of bootstrap replications#
+    # type:     type of CS ("symmetric", "two-sided", "upper", "lower")#
+    # stepdown: can take three values: "single", "basic", "modified"#
+    # indices:  indicates the individuals i for which joint coverage is desired. For example, if indices=1, then#
+    #           the resulting CS covers jointly all differences#
+    ##
+    #               mu_j-mu_i for i=1,2 and all j \neq i#
+    ##
+    #           NA means joint coverage across all i and all j \neq i.#
+    # bootstrap: type of bootstrap ("parametric" or "nonparametric"); nonparametric bootstrap is possible only if dat contains individual-level data#
+    #           for each subpopulation (i.e. dat is a matrix)#
+    ##
+    # OUTPUT:#
+    ##
+    # L:        lower bounds of CS; matrix with number of columns equal to number of subpopulations and number of rows equal to the length of indices#
+    # U:        upper bounds of CS; matrix with number of columns equal to number of subpopulations and number of rows equal to the length of indices#
+    # I:        matrix indicating which dimensions of the CS include zero (TRUE) and which do not (FALSE)#
+    ##
+    CSDiffMeans <- function(dat, sigmahat=NA, alpha=0.05, R=1000, CStype="symmetric", stepdown="single", indices=NA, bootstrap="parametric", seed=NA) {#
+        # check arguments#
+        bootstrap <- match.arg(bootstrap, c("parametric", "nonparametric"))#
+        CStype <- match.arg(CStype, c("symmetric", "two-sided", "upper", "lower"))#
+        stepdown <- match.arg(stepdown, c("single", "basic", "modified"))#
+#
+        # does dat contain individual data or population-specific means?#
+        if (is.matrix(dat)) {#
+            thetahat <- colMeans(dat)#
+            sigmahat <- sqrt(diag(cov(dat))/nrow(dat))#
+        } else {#
+            stopifnot(!is.na(sigmahat))#
+            stopifnot(bootstrap=="parametric")#
+            thetahat <- dat#
+        }#
+#
+        # initializations#
+        p <- length(thetahat)#
+        if (any(is.na(indices))) indices <- 1:p#
+        thetadiff <- outer(thetahat, thetahat, '-')#
+        sigmadiff <- sqrt(outer(sigmahat^2, sigmahat^2, '+'))#
+        anyrejections <- TRUE#
+        ChatL <- matrix(0,p,p); ChatU <- ChatL#
+        maxabs <- function(x) max(abs(x))#
+        mmax <- function(x) max(-x)#
+        # which differences?        #
+        I0 <- matrix(TRUE, p, p); I0[-indices,] <- FALSE; #
+        if (stepdown=="modified" & CStype=="symmetric") {#
+            CStype <- "lower"#
+            I0[,indices] <- TRUE#
+        } #
+        diag(I0) <- FALSE; I1 <- I0; Istar <- I0        #
+#
+        # parametric bootstrap#
+        if (bootstrap=="parametric") {#
+            diffFn <- function(Z, I, fn) {#
+                Zdiff <- outer(Z, Z, '-')#
+                fn(Zdiff[I]/sigmadiff[I])#
+            }#
+#
+            # beta-quantiles from Ln and Un#
+            LLowerInv <- function(I, beta) quantile(replicate(R, diffFn(sigmahat*rnorm(p), I, max)), probs=beta)#
+            LUpperInv <- function(I, beta) quantile(replicate(R, diffFn(sigmahat*rnorm(p), I, mmax)), probs=beta)#
+            LSymmInv <- function(I, beta) quantile(replicate(R, diffFn(sigmahat*rnorm(p), I, maxabs)), probs=beta)#
+        }#
+#
+        # nonparametric bootstrap#
+        if (bootstrap=="nonparametric") {#
+            diffFnb <- function(zind, I, fn) {#
+                Z <- dat[zind,]#
+                thetahatb <- colMeans(Z)#
+                sigmahatb <- sqrt(diag(cov(Z))/nrow(Z))#
+                thetadiffb <- outer(thetahatb, thetahatb, '-')#
+                sigmadiffb <- sqrt(outer(sigmahatb^2, sigmahatb^2, '+'))#
+                fn((thetadiffb[I]-thetadiff[I])/sigmadiffb[I])#
+            }#
+#
+            # beta-quantiles from Ln and Un#
+            LLowerInv <- function(I, beta) quantile(replicate(R, diffFnb(sample.int(nrow(dat), replace=TRUE), I, max)), probs=beta)#
+            LUpperInv <- function(I, beta) quantile(replicate(R, diffFnb(sample.int(nrow(dat), replace=TRUE), I, mmax)), probs=beta)#
+            LSymmInv <- function(I, beta) quantile(replicate(R, diffFnb(sample.int(nrow(dat), replace=TRUE), I, maxabs)), probs=beta)#
+        }#
+        # compute CS#
+        if (!is.na(seed)) set.seed(seed)#
+        while (anyrejections) {#
+#
+            # compute upper and lower confidence bounds#
+            if (CStype=="lower") {#
+                ChatL[I1] <- thetadiff[I1] - sigmadiff[I1]*LLowerInv(I1, 1-alpha)#
+                ChatU <- matrix(Inf, p, p)  #
+            }#
+            if (CStype=="upper") {#
+                ChatL <- matrix(-Inf, p, p)#
+                ChatU[I1] <- thetadiff[I1] + sigmadiff[I1]*LUpperInv(I1, 1-alpha)#
+            }#
+            if (CStype=="two-sided") {#
+                ChatL[I1] <- thetadiff[I1] - sigmadiff[I1]*LLowerInv(I1, 1-alpha/2)#
+                ChatU[I1] <- thetadiff[I1] + sigmadiff[I1]*LUpperInv(I1, 1-alpha/2)#
+            }#
+            if (CStype=="symmetric") {#
+                z <- LSymmInv(I1, 1-alpha)#
+                ChatL[I1] <- thetadiff[I1] - sigmadiff[I1]*z#
+                ChatU[I1] <- thetadiff[I1] + sigmadiff[I1]*z#
+            }           #
+#
+            # remove indices for which interval does not contain 0#
+            I1[ChatU < 0 | ChatL > 0] <- FALSE#
+            if (stepdown=="basic") I1[indices,indices] <- I1[indices,indices] & t(I1[indices,indices])#
+#
+            # stepdown improvements?#
+            if (stepdown=="basic" | stepdown=="modified") {#
+                # any new rejections?#
+                if (sum(I1)==sum(I0) | sum(I1)==0) {#
+                    anyrejections <- FALSE#
+                } else {#
+                    I0 <- I1#
+                }#
+            } else anyrejections <- FALSE#
+        }#
+#
+        ChatL[!Istar] <- NA; colnames(ChatL) <- 1:p; rownames(ChatL) <- 1:p#
+        ChatU[!Istar] <- NA; colnames(ChatU) <- 1:p; rownames(ChatU) <- 1:p#
+        # I1[!Istar] <- NA; colnames(I1) <- 1:p; rownames(I1) <- 1:p#
+#
+        return(list(L=ChatL,U=ChatU))#
+    }#
+    # ------------------- CS for ranks#
+    CSRanks.DiffMeans <- function(dat, sigmahat=NA, indices=1, CStype="symmetric", stepdown="single", ...) {#
+#
+        # joint CS for difference in means#
+        if (CStype=="lower" | CStype=="upper") {#
+            if (CStype=="upper") CSDifftype <- "lower"#
+            if (CStype=="lower") CSDifftype <- "upper"  #
+        } else {#
+            CSDifftype <- CStype#
+        }#
+#
+        # does dat contain individual data or population-specific means?#
+        if (is.matrix(dat)) p <- ncol(dat) else p <- length(dat)#
+        if (any(is.na(indices))) indices <- 1:p#
+        res <- CSDiffMeans(dat, sigmahat, indices=indices, CStype=CSDifftype, stepdown=stepdown, ...)#
+        L <- res$L; U <- res$U#
+#
+        # compute Nminus and Nplus#
+        if (stepdown=="modified" & CStype=="symmetric") {#
+            if (length(indices)==1 & all(!is.na(indices))) {#
+                Nplus <- sum(L[indices,]>0, na.rm=TRUE)#
+                Nminus <- sum(L[,indices]>0, na.rm=TRUE)#
+            } else {#
+                Nplus <- rowSums(L[indices,]>0, na.rm=TRUE)#
+                Nminus <- colSums(L[,indices]>0, na.rm=TRUE)#
+            }#
+        } else {#
+            if (length(indices)==1 & all(!is.na(indices))) {#
+                Nplus <- sum(L[indices,]>0, na.rm=TRUE)#
+                Nminus <- sum(U[indices,]<0, na.rm=TRUE)#
+            } else {#
+                Nplus <- rowSums(L[indices,]>0, na.rm=TRUE)#
+                Nminus <- rowSums(U[indices,]<0, na.rm=TRUE)#
+            }   #
+        }#
+#
+        # return lower and upper confidence bounds for the ranks#
+        return(list(L=(Nminus+1),U=(p-Nplus)))#
+    }#
+    # ------------------- CS for tau-best based on CIs for difference in means#
+    CSTauBest.DiffMeans <- function(dat, sigmahat=NA, tau=2, stepdown="single", ...) {#
+        # return indices whose lower bound on the rank is <= tau#
+        L <- CSRanks.DiffMeans(dat, sigmahat, CStype="lower", indices=NA, stepdown=stepdown, ...)$L#
+        return(L<=tau)#
+    }#
+    # ------------------- CS for tau-worst based on CIs for difference in means#
+    CSTauWorst.DiffMeans <- function(dat, sigmahat=NA, tau=2, stepdown="single", ...) {#
+        # return indices whose lower bound on the rank is >= p-tau+1#
+        U <- CSRanks.DiffMeans(dat, sigmahat, CStype="upper", indices=NA, stepdown=stepdown, ...)$U#
+        p <- length(U)#
+        return(U>=p-tau+1)#
+    }#
+# -----------------------------------------------------------------------------------------------------------------#
+# methods based on CS for means#
+# -----------------------------------------------------------------------------------------------------------------#
+    # ------------------- CS for means#
+    CSMeans <- function(dat, sigmahat=NA, alpha=0.05, R=1000, CStype="symmetric", bootstrap="parametric") {#
+#
+        bootstrap <- match.arg(bootstrap, c("parametric", "nonparametric", "normal"))#
+#
+        # does dat contain individual data or population-specific means?#
+        if (is.matrix(dat)) {#
+            thetahat <- colMeans(dat)#
+            sigmahat <- sqrt(diag(cov(dat))/nrow(dat))#
+        } else {#
+            stopifnot(!any(is.na(sigmahat)))#
+            stopifnot(bootstrap=="parametric" | bootstrap=="normal")#
+            thetahat <- dat#
+        }#
+        # initializations#
+        CStype <- match.arg(CStype, c("two-sided", "upper", "lower", "symmetric"))#
+        p <- length(thetahat)#
+        maxabs <- function(x) max(abs(x))#
+        mmax <- function(x) max(-x)#
+#
+        # parametric bootstrap#
+        if (bootstrap=="parametric") {#
+            # beta-quantiles from Ln and Un#
+            LLowerInv <- function(beta) quantile(replicate(R, max(rnorm(p))), probs=beta)#
+            LUpperInv <- function(beta) quantile(replicate(R, mmax(rnorm(p))), probs=beta)#
+            LSymmInv <- function(beta) quantile(replicate(R, maxabs(rnorm(p))), probs=beta)#
+        }#
+#
+        # nonparametric bootstrap#
+        if (bootstrap=="nonparametric") {#
+            Fnb <- function(zind, fn) {#
+                Z <- dat[zind,]#
+                thetahatb <- colMeans(Z)#
+                sigmahatb <- sqrt(diag(cov(Z))/nrow(Z))#
+                fn((thetahatb-thetahat)/sigmahatb)#
+            }#
+#
+            # beta-quantiles from Ln and Un#
+            LLowerInv <- function(beta) quantile(replicate(R, Fnb(sample.int(nrow(dat), replace=TRUE), max)), probs=beta)#
+            LUpperInv <- function(beta) quantile(replicate(R, Fnb(sample.int(nrow(dat), replace=TRUE), mmax)), probs=beta)#
+            LSymmInv <- function(beta) quantile(replicate(R, Fnb(sample.int(nrow(dat), replace=TRUE), maxabs)), probs=beta)#
+        }#
+#
+        # asymptotic normality#
+        if (bootstrap=="normal") {#
+#
+            # beta-quantiles from Ln and Un#
+            LLowerInv <- function(beta) qnorm(beta^(1/p))#
+            LUpperInv <- function(beta) qnorm(beta^(1/p))#
+            LSymmInv <- function(beta) qnorm((1+beta^(1/p))/2)#
+        }#
+        # compute upper and lower confidence bounds#
+        if (CStype=="lower") {#
+            ChatL <- thetahat - sigmahat*LLowerInv(1-alpha)#
+            ChatU <- rep(Inf, p)    #
+        }#
+        if (CStype=="upper") {#
+            ChatL <- rep(-Inf, p)#
+            ChatU <- thetahat + sigmahat*LUpperInv(1-alpha)#
+        }#
+        if (CStype=="two-sided") {#
+            ChatL <- thetahat - sigmahat*LLowerInv(1-alpha/2)#
+            ChatU <- thetahat + sigmahat*LUpperInv(1-alpha/2)#
+        }       #
+        if (CStype=="symmetric") {#
+            ChatL <- thetahat - sigmahat*LSymmInv(1-alpha)#
+            ChatU <- thetahat + sigmahat*LSymmInv(1-alpha)#
+        }   #
+#
+        return(list(L=ChatL,U=ChatU))#
+    }#
+    # ------------------- CS for ranks#
+    CSRanks.Means <- function(dat, sigmahat=NA, indices=NA, ...) {#
+#
+        if (is.matrix(dat)) p <- ncol(dat) else p <- length(dat)#
+        if (any(is.na(indices))) indices <- 1:p#
+#
+        # joint CS for means#
+        res <- CSMeans(dat, sigmahat, CStype="symmetric", ...)#
+        L <- res$L; U <- res$U#
+#
+        # compute upper and lower confidence bounds for the ranks#
+        U.r <- rep(NA,p); L.r <- rep(NA,p)#
+        for (i in indices) {#
+            LambdaL <- sum(U[-i]<L[i])#
+            LambdaR <- sum(U[i]<L[-i])#
+            U.r[i] <- p - LambdaL#
+            L.r[i] <- LambdaR+1#
+        }#
+#
+        return(list(L=L.r[indices],U=U.r[indices]))#
+    }#
+    # ------------------- CS for tau-best#
+    CSTauBest.Means <- function(dat, sigmahat=NA, tau=2, ...) {#
+        # return indices whose lower bound on the rank is <= tau#
+        L <- CSRanks.Means(dat, sigmahat, indices=NA, ...)$L#
+        return(L<=tau)#
+    }#
+#
+    # ------------------- CS for tau-worst#
+    CSTauWorst.Means <- function(dat, sigmahat=NA, tau=2, ...) {#
+        # return indices whose lower bound on the rank is >= p-tau+1#
+        U <- CSRanks.Means(dat, sigmahat, indices=NA, ...)$U#
+        if (is.matrix(dat)) p <- ncol(dat) else p <- length(dat)#
+        return(U>=p-tau+1)#
+    }#
+# -----------------------------------------------------------------------------------------------------------------#
+# direct method for tau-best problem#
+# -----------------------------------------------------------------------------------------------------------------#
+    # ------------------- CS for tau-best based on test statistic T (implemented only for tau=2)#
+    CSTauBest.T <- function(thetahat, sigmahat, tau=2, alpha=0.05, R=1000, studentized="SE", n=NA) {#
+        stopifnot(tau==2)#
+        stopifnot(!any(is.na(sigmahat)))#
+#
+        # initializations#
+        reject <- TRUE#
+        p <- length(thetahat)#
+        S <- rep(TRUE,p)#
+#
+        # compute Tnjk#
+        Tnjk <- computeTnjk(thetahat, sigmahat, studentized, n=n)#
+#
+        # compute the test statistic Tnj#
+        Tnj <- apply(Tnjk, 2, min)#
+#
+        # draw bootstrap version of Tnjk#
+        Tnjk.sim <- replicate(R, computeTnjk(sigmahat*rnorm(p), sigmahat, studentized, n=n))    #
+#
+        # repeatedly perform the test with smaller and smaller S until fail to reject#
+        while (reject) {#
+#
+            # compute cval#
+            Tk <- apply(Tnjk.sim[,S,], c(1,3), max)#
+            cval <- max(apply(Tk, 1, quantile, prob=1-alpha))#
+            # perform test#
+            reject <- any(Tnj[S] > cval)#
+            ind.newRejects <- which(Tnj > cval & S)#
+#
+            # remove all rejected individuals#
+            if (reject) S[ind.newRejects] <- FALSE#
+        }#
+#
+        return(S)#
+    }#
+#
+    # compute the test statistic for the individual hypothesis H_i using a fixed k#
+    ##
+    #        T_{n,j,k} = max_{l!=k} [ thetahat_l - thetahat_j ] / s_{lj}#
+    ##
+    computeTnjk <- function(thetahat, sigmahat, studentized="SE", n=NA) {#
+#
+        stopifnot(!(is.na(n) & studentized=="n"))#
+        # compute standardized difference of thetas#
+        p <- length(thetahat)#
+        tmat <- matrix(rep(thetahat,p), ncol=p)#
+        smat <- matrix(rep(sigmahat^2,p), ncol=p)#
+        thetadiff <- tmat - t(tmat)#
+        thetadiff <- switch(studentized,#
+            "SE" = thetadiff/sqrt(smat+t(smat)),#
+            "n" = sqrt(n)*thetadiff)#
+        # compute max over j!=k #
+        Tnjk <- apply(thetadiff, 2, loomax)#
+#
+        return(Tnjk)#
+    }#
+    # compute leave-one-out max of a vector#
+    loomax <- function(x) {#
+        top2 <- sort(x, decreasing=TRUE)[1:2]#
+        return(ifelse(x==top2[1], top2[2], top2[1]))#
+    }#
+    # ------------------- alternative CS for tau-best based on test statistic T (implemented only for tau=2)#
+    CSTauBest.T.alt <- function(thetahat, sigmahat, tau=2, alpha=0.05, R=1000, studentized="SE", n=NA, epsilon=NA) {#
+        stopifnot(tau==2)#
+        stopifnot(!any(is.na(sigmahat)))#
+#
+        if (is.na(epsilon)) { #
+            stopifnot(!is.na(n))#
+            epsilon <- log(n)/sqrt(n)#
+        }#
+#
+        # initializations#
+        reject <- TRUE#
+        p <- length(thetahat)#
+        S <- rep(TRUE,p)#
+#
+        # compute Knhat#
+        secondBest <- thetahat[order(thetahat, decreasing=TRUE)][2]#
+        Knhat <- thetahat <= secondBest + epsilon#
+#
+        # compute the test statistic Tnj#
+        smat <- matrix(rep(sigmahat^2,p), ncol=p)#
+        computeTnj <- function(x) {#
+            xmat <- matrix(rep(x,p), ncol=p)#
+            xmatDiff <- xmat - t(xmat)#
+            if (studentized=="SE") xmatDiff <- xmatDiff / sqrt(smat+t(smat))#
+#
+            return(apply(xmatDiff[Knhat,], 2, max)  )#
+        }#
+        Tnj <- computeTnj(thetahat)#
+        # draw bootstrap version of Tnj#
+        Tnj.sim <- replicate(R, computeTnj(sigmahat*rnorm(p)))  #
+#
+        # repeatedly perform the test with smaller and smaller S until fail to reject#
+        while (reject) {#
+#
+            # compute cval#
+            if (sum(S)==1) Tk <- Tnj.sim[S,] else Tk <- apply(Tnj.sim[S,], 2, max)#
+            cval <- quantile(Tk, prob=1-alpha)#
+            # perform test#
+            reject <- any(Tnj[S] > cval)#
+            ind.newRejects <- which(Tnj > cval & S)#
+#
+            # remove all rejected individuals#
+            if (reject) S[ind.newRejects] <- FALSE#
+        }#
+#
+        return(S)#
+    }#
+    # ------------------- CS for tau-best based on test statistic T (parallel version, for any value of tau)#
+    CSTauBest.T.parallel <- function(dat, sigmahat, tau=2, alpha=0.05, R=1000, blockSize=100, bootstrap="parametric", nCores=1) {#
+        stopifnot(bootstrap=="parametric")#
+#
+        # does dat contain individual data or population-specific means?#
+        if (is.matrix(dat)) {#
+            thetahat <- colMeans(dat)#
+            sigmahat <- sqrt(diag(cov(dat))/nrow(dat))#
+        } else {#
+            if (any(is.na(sigmahat))) stop("Need to provide sigmahat!")#
+            stopifnot(bootstrap=="parametric")#
+            thetahat <- dat#
+        }#
+#
+        # initializations#
+        reject <- TRUE#
+        p <- length(thetahat)#
+        I <- rep(TRUE, p)#
+        registerDoMC(nCores)#
+#
+        # compute test statistics T_{n,j}#
+        T_nj <- sort(thetahat, decreasing=TRUE)[tau] - thetahat#
+#
+        # set of subsets K#
+        ncalK <- choose(p,p-tau+1)#
+        nKBlocks <- ceiling(ncalK/blockSize)#
+        indL <- ((1:nKBlocks)-1)*blockSize + 1#
+        indU <- ifelse((1:nKBlocks)*blockSize <= ncalK, (1:nKBlocks)*blockSize, ncalK)#
+#
+        while (reject) {#
+#
+            # compute critical value#
+            if (tau==1) {#
+                computeT_nIK <- function(Z) return(max(Z)-min(Z[I]))#
+                T_nIK.sim <- replicate(R, computeT_nIK(rnorm(p, 0, sigmahat)))#
+                cval <- quantile(T_nIK.sim, prob=1-alpha)#
+            } else {#
+                res <- foreach(i=1:nKBlocks, .combine=c) %dopar% {#
+                    computeT_nIK <- function(Z) return(apply(combn(Z, p-tau+1)[,indL[i]:indU[i]], 2, max) - min(Z[I]))#
+                    T_nIK.sim <- replicate(R, computeT_nIK(rnorm(p, 0, sigmahat)))#
+                    apply(T_nIK.sim, 1, quantile, prob=1-alpha)#
+                }#
+                cval <- max(res)    #
+            }#
+            # perform test#
+            reject <- any(T_nj[I] > cval)#
+#
+            # remove all rejected hypotheses#
+            if (reject) I <- T_nj <= cval#
+        }#
+#
+        return(I)#
+    }#
+    # ------------------- CS for tau-worst based on test statistic T (parallel version, for any value of tau)#
+    CSTauWorst.T.parallel <- function(dat, sigmahat, tau=2, alpha=0.05, R=1000, blockSize=100, bootstrap="parametric", nCores=1) {#
+        stopifnot(bootstrap=="parametric")#
+#
+        # does dat contain individual data or population-specific means?#
+        if (is.matrix(dat)) {#
+            thetahat <- colMeans(dat)#
+            sigmahat <- sqrt(diag(cov(dat))/nrow(dat))#
+        } else {#
+            if (any(is.na(sigmahat))) stop("Need to provide sigmahat!")#
+            stopifnot(bootstrap=="parametric")#
+            thetahat <- dat#
+        }#
+#
+        # initializations#
+        reject <- TRUE#
+        p <- length(thetahat)#
+        I <- rep(TRUE, p)#
+        registerDoMC(nCores)#
+#
+        # compute test statistics T_{n,j}#
+        T_nj <- thetahat - sort(thetahat, decreasing=TRUE)[p-tau+1]#
+#
+        # set of subsets K#
+        ncalK <- choose(p,p-tau+1)#
+        nKBlocks <- ceiling(ncalK/blockSize)#
+        indL <- ((1:nKBlocks)-1)*blockSize + 1#
+        indU <- ifelse((1:nKBlocks)*blockSize <= ncalK, (1:nKBlocks)*blockSize, ncalK)#
+#
+        while (reject) {#
+#
+            # compute critical value#
+            if (tau==1) {#
+                computeT_nIK <- function(Z) return(max(Z[I])-min(Z))#
+                T_nIK.sim <- replicate(R, computeT_nIK(rnorm(p, 0, sigmahat)))#
+                cval <- quantile(T_nIK.sim, prob=1-alpha)#
+            } else {#
+                res <- foreach(i=1:nKBlocks, .combine=c) %dopar% {#
+                    computeT_nIK <- function(Z) return(max(Z[I]) - apply(combn(Z, p-tau+1)[,indL[i]:indU[i]], 2, min))#
+                    T_nIK.sim <- replicate(R, computeT_nIK(rnorm(p, 0, sigmahat)))#
+                    apply(T_nIK.sim, 1, quantile, prob=1-alpha)#
+                }#
+                cval <- max(res)    #
+            }#
+            # perform test#
+            reject <- any(T_nj[I] > cval)#
+#
+            # remove all rejected hypotheses#
+            if (reject) I <- T_nj <= cval#
+        }#
+#
+        return(I)#
+    }#
+# compute rank#
+my.rank <- function(x, best=TRUE) return(best*(colSums(outer(x,x,'>'))+1) + (1-best)*(colSums(outer(x,x,'<'))+1))#
+# -----------------------------------------------------------------------------------------------------------------#
+# other approaches#
+# -----------------------------------------------------------------------------------------------------------------#
+    # pick tau best among estimated means#
+    tauBest.naive <- function(thetahat, tau=2) {#
+        ranking <- order(thetahat, decreasing=TRUE)#
+        taubest <- rep(FALSE, length(thetahat))#
+        taubest[ranking[1:tau]] <- TRUE#
+        return(taubest)#
+    }
+dgp <- function(nobs=200, p=3, delta1=1, delta2=2, tmax=0, topTwo=1:2) {#
+#
+        theta <- rep(NA, p)#
+        k <- length(topTwo)#
+        theta[topTwo[1]] <- tmax+delta1#
+        theta[topTwo[-1]] <- tmax+delta1/delta2#
+        if (p-k>0) theta[-topTwo] <- seq(tmax,0,length=(p-k))#
+        if (tmax==0 & delta1==0) allequal <- TRUE else allequal <- FALSE#
+#
+        trueRanking.best <- my.rank(theta, best=TRUE)#
+        trueRanking.worst <- my.rank(theta, best=FALSE)#
+#
+        return(list(dat=mvrnorm(nobs, theta, diag(rep(1,p))), theta=theta, allequal=allequal, trueRanking.best=trueRanking.best, trueRanking.worst=trueRanking.worst))#
+    }
+dgp(p=100,delta2=1,tmax=0.5,topTwo=1)
+dgp(p=100,delta1=0,delta2=1,tmax=0.5,topTwo=1)$theta
+dgp(p=100,delta1=0.3,delta2=1,tmax=0.5,topTwo=1)$theta
+my.rank <- function(x, best=TRUE) return(best*(colSums(outer(x,x,'>'))+1) + (1-best)*(colSums(outer(x,x,'<'))+1))
+x<-c(4,4,4,4,3,6)
+my.rank(x)
+my.rank(x, best=FALSE)
+6-my.rank(x, best=FALSE)+1
+library(Rmosek)
+mosek_attachbuilder("~/Library/mosek/9.3/tools/platform/linux64x86/bin")
+source("~/Library/mosek/9.3/tools/platform/osx64x86/rmosek/builder.R")
+attachbuilder()
+install.rmosek()
+load("IFdata.RData")
+setwd("/Users/uctpdwi/Dropbox/work/sync/Documents/projects/rankings AER PP/emp/journal IF")
+library(csranks)
+# load data
+load("IFdata.RData")
+journalIF <- journalIF[!is.na(journalIF$IF) & journalIF$IF>0,]
+journalIF$rank <- xrank(journalIF$IF)
+journalIF <- journalIF[order(journalIF$rank),]
+load("/Users/uctpdwi/Dropbox/work/sync/Documents/projects/rankings AER PP/emp/journal IF/journalIFrankings.RData")
+journalIF
+journalIF$journal
+"INT ECON REV" %in% journalIF$journal
+"J ECON THEORY" %in% journalIF$journal
+top30names <- c("JEL", "QJE", "JEP", "JFE", "JPE", "Econometrica", "AER", "REStud", "RESTAT", "JLE", "JEEM", "JHumRes", "J INT ECON", "EconJ", "JMonEcon", "JEconometrics", "RAND J ECON", "J BUS ECON STAT", "JPubEcon", "JAppliedEconmet", "EUR ECON REV", "IER", "JET", "OXFORD B ECON STAT", "GAME ECON BEHAV", "J ECON DYN CONTROL", "SCAND J ECON", "ECONOMET THEOR", "Econ Theory", "EL")
+journalIF.top30 <- journalIF[journalIF$journal %in% top30names,]
+journalIF.top30$rank <- xrank(journalIF.top30$IF)
+CS_marg.top30 <- csranks(journalIF.top30$IF, journalIF.top30$SE, coverage=0.95, stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+journalIF.top30$margCSL <- CS_marg.top30$L
+journalIF.top30$margCSU <- CS_marg.top30$U
+library(ggplot2)
+p <- nrow(journalIF)
+# plot data#
+        plotdata.top30 <- ggplot(journalIF.top30, aes(x=reorder(journal, rank),y=IF)) + #
+                geom_point() + #
+                geom_errorbar(aes(ymin=IF-2*SE,ymax=IF+2*SE)) + #
+                ylab(NULL) + theme_bw() + xlab(NULL) +#
+                scale_x_discrete(guide = guide_axis(angle = 60)) + labs(title = "2011 Impact Factor for 30 Journals", subtitle = "(with +/- 2*SE)")#
+        ggplot2::ggsave("journalIFdatatop30.pdf", plot=plotdata.top30)#
+#
+        # plot marg CS for top 30#
+        pl.top30 <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = margCSL, ymax = margCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, seq(5, 30, by = 5))), labels = unique(c(1, seq(5, 30, by = 5)))) +#
+                xlab(NULL) + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% marginal confidence sets)")#
+#
+        ggplot2::ggsave("journalIFrankingtop30.pdf", plot=pl.top30)#
+#
+        # plot simul CS#
+        pl.top30 <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = simulCSL, ymax = simulCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, seq(5, 30, by = 5))), labels = unique(c(1, seq(5, 30, by = 5)))) +#
+                xlab(NULL) + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% simultaneous confidence sets)")#
+        ggplot2::ggsave("journalIFrankingsimultop30.pdf", plot=pl.top30)#
+#
+        # plot taubest CS#
+        pl.taubest <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank, color=1*ind5best)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = lowerCSL, ymax = lowerCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, 5, seq(5, 30, by = 5))), labels = unique(c(1, 5, seq(5, 30, by = 5)))) +#
+                xlab(NULL) +#
+                geom_hline(yintercept = 5, size=0.5) +#
+                theme(legend.position="none") + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% simultaneous confidence sets)")#
+        ggplot2::ggsave("journalIFrankingtaubesttop30.pdf", plot=pl.taubest)#
+#
+        # plot tauworst CS#
+        pl.tauworst <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank, color=1*ind25worst)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = upperCSL, ymax = upperCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, 5, seq(5, 30, by = 5))), labels = unique(c(1, 5, seq(5, 30, by = 5)))) +#
+                xlab(NULL) +#
+                geom_hline(yintercept = 6, size=0.5) +#
+                theme(legend.position="none") + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% simultaneous confidence sets)")#
+        ggplot2::ggsave("journalIFrankingtauworsttop30.pdf", plot=pl.tauworst)
+# compute simul CS for top 30 journals#
+    CS_simul <- csranks(journalIF.top30$IF, journalIF.top30$SE, coverage=0.95, stepdown=TRUE, simul=TRUE, R=1000, seed=101)#
+    journalIF.top30$simulCSL <- CS_simul$L#
+    journalIF.top30$simulCSU <- CS_simul$U#
+#
+    # CS for the 5-best of the top 30 journals#
+    CS_lower <- csranks(journalIF.top30$IF, journalIF.top30$SE, coverage=0.95, cstype = "lower", stepdown=TRUE, simul=TRUE, R=1000, seed=101)#
+    journalIF.top30$lowerCSL <- CS_lower$L#
+    journalIF.top30$lowerCSU <- CS_lower$U#
+    journalIF.top30$ind5best <- (CS_lower$L <= 5)#
+#
+    # CS for the 25-worst of the top 30 journals#
+    CS_upper <- csranks(journalIF.top30$IF, journalIF.top30$SE, coverage=0.95, cstype = "upper", stepdown=TRUE, simul=TRUE, R=1000, seed=101)#
+    journalIF.top30$upperCSL <- CS_upper$L#
+    journalIF.top30$upperCSU <- CS_upper$U#
+    journalIF.top30$ind25worst <- (CS_upper$U > 5)
+# plot data#
+        plotdata.top30 <- ggplot(journalIF.top30, aes(x=reorder(journal, rank),y=IF)) + #
+                geom_point() + #
+                geom_errorbar(aes(ymin=IF-2*SE,ymax=IF+2*SE)) + #
+                ylab(NULL) + theme_bw() + xlab(NULL) +#
+                scale_x_discrete(guide = guide_axis(angle = 60)) + labs(title = "2011 Impact Factor for 30 Journals", subtitle = "(with +/- 2*SE)")#
+        ggplot2::ggsave("journalIFdatatop30.pdf", plot=plotdata.top30)#
+#
+        # plot marg CS for top 30#
+        pl.top30 <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = margCSL, ymax = margCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, seq(5, 30, by = 5))), labels = unique(c(1, seq(5, 30, by = 5)))) +#
+                xlab(NULL) + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% marginal confidence sets)")#
+#
+        ggplot2::ggsave("journalIFrankingtop30.pdf", plot=pl.top30)#
+#
+        # plot simul CS#
+        pl.top30 <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = simulCSL, ymax = simulCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, seq(5, 30, by = 5))), labels = unique(c(1, seq(5, 30, by = 5)))) +#
+                xlab(NULL) + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% simultaneous confidence sets)")#
+        ggplot2::ggsave("journalIFrankingsimultop30.pdf", plot=pl.top30)#
+#
+        # plot taubest CS#
+        pl.taubest <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank, color=1*ind5best)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = lowerCSL, ymax = lowerCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, 5, seq(5, 30, by = 5))), labels = unique(c(1, 5, seq(5, 30, by = 5)))) +#
+                xlab(NULL) +#
+                geom_hline(yintercept = 5, size=0.5) +#
+                theme(legend.position="none") + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% simultaneous confidence sets)")#
+        ggplot2::ggsave("journalIFrankingtaubesttop30.pdf", plot=pl.taubest)#
+#
+        # plot tauworst CS#
+        pl.tauworst <- ggplot(data = journalIF.top30, aes(x = reorder(journal, rank), y = rank, color=1*ind25worst)) +#
+                theme_bw() + #
+                geom_point() + geom_errorbar(aes(ymin = upperCSL, ymax = upperCSU), position = position_dodge(0.1)) +#
+                coord_flip() +#
+                scale_y_continuous(name = "rank", limits = c(1, 30), breaks = unique(c(1, 5, seq(5, 30, by = 5))), labels = unique(c(1, 5, seq(5, 30, by = 5)))) +#
+                xlab(NULL) +#
+                geom_hline(yintercept = 6, size=0.5) +#
+                theme(legend.position="none") + labs(title = "Ranking of 30 Journals by 2011 Impact Factor", subtitle = "(with 95% simultaneous confidence sets)")#
+        ggplot2::ggsave("journalIFrankingtauworsttop30.pdf", plot=pl.tauworst)
+save(journalIF, journalIF.top30, file="journalIFrankings.RData")
