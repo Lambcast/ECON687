@@ -1,0 +1,364 @@
+---
+title: "Statistical Uncertainty in the Ranking of Journals and Universities"
+subtitle: "Replication of Mogstad, Romano, Shaikh & Wilhelm (2022)"
+author: "Jason Jankoski, Alan Lamb, Linna Wang"
+date: "ECON 687 — University of Maryland"
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+knitr::opts_knit$set(root.dir = "../")
+```
+
+```{r load-packages, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(csranks)
+```
+
+
+# The Paper
+
+## What Question Does It Ask?
+
+Rankings of journals and universities are used constantly in academic hiring,
+promotion, and funding decisions. But they are almost always reported as a
+single number — journal X is ranked 5th — with no indication of how precisely
+that rank is estimated.
+
+This paper asks: **given that the underlying measures (like impact factors) are
+themselves estimated with uncertainty, how much uncertainty surrounds the
+resulting ranks?**
+
+The authors develop confidence sets for ranks: rather than reporting a single
+rank, they report the range of ranks that cannot be statistically rejected at
+the 95% confidence level.
+
+## Method in Plain Terms
+
+The core idea is straightforward. An impact factor is an average — it is
+estimated from a finite number of articles and carries a standard error. When
+you rank things by noisy estimates, the resulting ranks are also noisy.
+
+The authors' method:
+
+- Takes the point estimates (impact factors) and their standard errors as inputs
+- Uses a bootstrap procedure to simulate the distribution of possible rankings
+- Constructs a confidence set for each entity's rank — the set of ranks that
+  are statistically consistent with the data at the 95% level
+
+The method is implemented in the R package `csranks`, written by the authors
+and available on GitHub.
+
+## What Did They Find?
+
+Two empirical applications:
+
+**Journals** — ranking 30 economics journals by 2011 impact factor:
+
+- 10 of the 30 journals cannot be statistically distinguished from the top 5
+- Only 1 journal can be ruled out of the bottom 25
+
+**Universities** — ranking 100 universities using publication records from
+Research Papers in Economics (RePEC):
+
+- The top and bottom of the ranking are fairly precise
+- Substantial uncertainty throughout the middle
+
+
+# The Data
+
+## Two Datasets — Both Included in Replication Package
+
+No external data access required. Both files are in the `data/` folder.
+
+| Dataset | Source | File |
+|---|---|---|
+| Journal impact factors | Stern (2013) | `data/journal IF/JEL_Data.xlsx` |
+| University publications | Zimmermann (2013) | `data/Repec/top100unis.csv` |
+
+The journal data was assembled and shared by David Stern. The university data
+comes from RePEC (Research Papers in Economics), a self-reported database of
+economists' affiliations and publications maintained by Christian Zimmermann.
+
+## Journal Data — Loading and Structure
+
+The Excel file has one sheet per journal with raw article-level citation counts.
+The authors' `convertdata.R` script processes this into impact factors and
+standard errors.
+
+```{r load-journal-data}
+# Load the processed journal IF data
+load(file.path("data", "journal IF", "IFdata.RData"))
+
+# The exact 30-journal list from Kalaitzidakis, Mamuneas & Stengos (2003)
+top30names <- c("JEL", "QJE", "JEP", "JFE", "JPE", "Econometrica",
+                "AER", "REStud", "RESTAT", "JLE", "JEEM", "JHumRes",
+                "J INT ECON", "EconJ", "JMonEcon", "JEconometrics",
+                "RAND J ECON", "J BUS ECON STAT", "JPubEcon",
+                "JAppliedEconmet", "EUR ECON REV", "IER", "JET",
+                "OXFORD B ECON STAT", "GAME ECON BEHAV",
+                "J ECON DYN CONTROL", "SCAND J ECON",
+                "ECONOMET THEOR", "Econ Theory", "EL")
+
+# Filter to top 30 and rank by impact factor
+jIF <- journalIF %>%
+  filter(!is.na(IF), IF > 0, journal %in% top30names) %>%
+  arrange(desc(IF)) %>%
+  mutate(rank = row_number())
+
+cat("Journals matched:", nrow(jIF), "of 30")
+```
+
+## Journal Data — What We're Working With
+
+```{r journal-table}
+jIF %>%
+  select(Rank = rank, Journal = journal, IF, SE, N_articles = n) %>%
+  mutate(IF = round(IF, 3), SE = round(SE, 3)) %>%
+  head(10) %>%
+  knitr::kable(caption = "Top 10 journals by 2011 impact factor")
+```
+
+## Journal Data — Descriptive Statistics
+
+```{r journal-summary}
+cat("--- All 231 Valid Journals ---\n")
+jall <- journalIF %>% filter(!is.na(IF), IF > 0)
+cat("Mean IF:  ", round(mean(jall$IF), 4), "\n")
+cat("Median IF:", round(median(jall$IF), 4), "\n")
+cat("SD of IF: ", round(sd(jall$IF), 4), "\n")
+cat("Range:    [", round(min(jall$IF), 4), ",", round(max(jall$IF), 4), "]\n\n")
+
+cat("--- KMS Top 30 Journals ---\n")
+cat("Mean IF:  ", round(mean(jIF$IF), 4), "\n")
+cat("Median IF:", round(median(jIF$IF), 4), "\n")
+cat("SD of IF: ", round(sd(jIF$IF), 4), "\n")
+cat("Mean SE:  ", round(mean(jIF$SE), 4), "\n")
+cat("Range:    [", round(min(jIF$IF), 4), ",", round(max(jIF$IF), 4), "]\n")
+```
+
+## University Data — Loading and Structure
+
+```{r load-university-data}
+# Load the cleaned top-100 university dataset
+unis <- read.csv(file.path("data", "Repec", "top100unis.csv")) %>%
+  filter(!is.na(IFmean)) %>%
+  arrange(desc(IFmean)) %>%
+  mutate(rank = row_number())
+
+# Column definitions:
+#   name   = university name
+#   n      = number of affiliated authors in RePEC
+#   IFmean = average impact factor of the university's publications
+#   IFse   = standard error of that average
+#   CTmean = average citation count
+#   CTse   = standard error of citation mean
+
+glimpse(unis)
+```
+
+## University Data — Descriptive Statistics
+
+```{r university-summary}
+cat("--- 100 Universities ---\n")
+cat("Mean IFmean:   ", round(mean(unis$IFmean), 4), "\n")
+cat("Median IFmean: ", round(median(unis$IFmean), 4), "\n")
+cat("SD of IFmean:  ", round(sd(unis$IFmean), 4), "\n")
+cat("Mean IFse:     ", round(mean(unis$IFse), 4), "\n")
+cat("Total authors: ", sum(unis$n), "\n")
+cat("IF range:      [", round(min(unis$IFmean), 4), ",",
+                        round(max(unis$IFmean), 4), "]\n")
+```
+
+## University Data — Top 20
+
+```{r university-table}
+unis %>%
+  slice(1:20) %>%
+  select(Rank = rank, University = name, IFmean, IFse, N_authors = n) %>%
+  mutate(IFmean = round(IFmean, 3), IFse = round(IFse, 3)) %>%
+  knitr::kable(caption = "Top 20 universities by average impact factor")
+```
+
+
+# The Code
+
+## Overall Pipeline
+
+The replication follows the authors' code structure exactly:
+
+```
+data/journal IF/convertdata.R    # cleans Excel → IFdata.RData
+data/journal IF/journalranking.R # computes confidence sets → Figure 1
+data/Repec/cleandata.R           # cleans RePEC raw data
+data/Repec/keeptop100.R          # filters to top 100 universities
+data/Repec/emp.topunis.R         # computes confidence sets → Figure 2
+```
+
+Our `code/00_data_check.R` runs the key steps independently so we can confirm
+the pipeline works without running the full `master.R`.
+
+## Data Import — What This Code Does
+
+The journal data comes in as a messy Excel file. Each of the 233 sheets is one
+journal, with rows representing individual articles and columns representing
+years. There is no single flat table to load directly.
+
+```{r show-sheets, eval=FALSE}
+# This is what the raw Excel looks like before convertdata.R runs
+sheet_names <- excel_sheets(file.path("data", "journal IF", "JEL_Data.xlsx"))
+cat("Number of sheets:", length(sheet_names))
+cat("First 5 sheets:", head(sheet_names, 5))
+
+# Each sheet looks like this:
+# rows    = individual articles published in that journal
+# columns = years (how many citations that article received each year)
+# bottom  = summary stats: mean, SD, SE of the mean
+```
+
+`convertdata.R` loops through every sheet, extracts the mean and standard error
+from the bottom rows, and assembles a single clean data frame.
+
+## Data Wrangling — Filtering to the KMS Top 30
+
+The full dataset has 232 journals. The paper focuses on 30 specific journals
+pre-selected by Kalaitzidakis, Mamuneas & Stengos (2003) — an earlier study
+that identified leading outlets in economics based on citation data from
+1994–1998. We filter to exactly those 30 by name.
+
+```{r show-filter, eval=FALSE}
+jIF <- journalIF %>%
+  filter(
+    !is.na(IF),              # remove journals with no impact factor data
+    IF > 0,                  # remove journals with zero citations
+    journal %in% top30names  # keep only the KMS 30
+  ) %>%
+  arrange(desc(IF)) %>%      # sort highest IF first
+  mutate(rank = row_number()) # assign point ranks 1 through 30
+```
+
+The `arrange` and `mutate` steps give us the point estimate of each journal's
+rank — the rank you would assign if you ignored uncertainty entirely.
+
+## The Key Statistical Step — csranks
+
+This is the core of the replication. The `csranks()` function takes the point
+estimates and their uncertainty, runs a bootstrap simulation, and returns
+confidence sets for ranks.
+
+```{r show-csranks, eval=FALSE}
+# Convert SE vector to a diagonal covariance matrix
+# (csranks requires a matrix, not a vector)
+# diag(SE^2) places variances on the diagonal, zeros off-diagonal
+# This assumes estimation errors are independent across journals
+Sigma <- diag(jIF$SE^2)
+
+CS <- csranks::csranks(
+  jIF$IF,          # point estimates (impact factors)
+  Sigma = Sigma,   # covariance matrix of estimation errors
+  coverage = 0.95, # 95% confidence level
+  stepdown = TRUE, # stepdown procedure (more powerful than single-step)
+  simul    = FALSE, # marginal (not simultaneous) confidence sets
+  R        = 1000, # number of bootstrap draws
+  seed     = 101   # for reproducibility
+)
+
+# Output: CS$L = lower bound of rank confidence set
+#         CS$U = upper bound of rank confidence set
+jIF$CSL <- CS$L
+jIF$CSU <- CS$U
+```
+
+## What stepdown and simul Mean
+
+Two parameters worth understanding:
+
+**`stepdown = TRUE`** — uses a stepwise testing procedure. Instead of testing
+all ranks simultaneously at once, it iterates, removing journals whose ranks
+are already determined. This gives tighter (more informative) confidence sets
+than a single-step approach.
+
+**`simul = FALSE`** — produces *marginal* confidence sets. Each journal's
+confidence set covers its true rank with 95% probability individually.
+When `simul = TRUE`, the sets are *simultaneous* — all true ranks are covered
+jointly with 95% probability. Simultaneous sets are wider. The paper shows both;
+Figure 1 uses marginal sets.
+
+
+# Figures
+
+## Figure 1 — Journal Rankings (Proof of Concept)
+
+```{r figure1, fig.height=4.5, fig.width=9, echo=FALSE}
+# Load pre-computed confidence sets if available
+# (running bootstrap live takes ~2 minutes)
+cs_path <- file.path("data", "journal IF", "journalIFrankings.RData")
+if (file.exists(cs_path)) {
+  load(cs_path)
+  plot_data <- journalIF.top30
+} else {
+  Sigma <- diag(jIF$SE^2)
+  CS <- csranks::csranks(jIF$IF, Sigma=Sigma, coverage=0.95,
+                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+  plot_data <- jIF %>% mutate(margCSL = CS$L, margCSU = CS$U, rank = rank)
+}
+
+ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
+  theme_bw() +
+  geom_point(size = 2) +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU), width = 0.4) +
+  scale_x_continuous(name = "Rank", limits = c(1,30),
+                     breaks = c(1, 5, 10, 15, 20, 25, 30)) +
+  ylab(NULL) +
+  labs(title = "Ranking of 30 Journals by 2011 Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks")
+```
+
+## Figure 2 — University Rankings (Proof of Concept)
+
+```{r figure2, fig.height=4.5, fig.width=9, echo=FALSE}
+Sigma_u <- diag(unis$IFse^2)
+CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
+                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+unis$margCSL <- CS_u$L
+unis$margCSU <- CS_u$U
+
+ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
+  theme_bw() +
+  geom_point(size = 0.7) +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU), width = 0.4) +
+  scale_x_continuous(name = "Rank", limits = c(1,100),
+                     breaks = c(1, seq(10,100,by=10))) +
+  ylab(NULL) +
+  labs(title = "Ranking of 100 Universities by Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks") +
+  theme(axis.text.y = element_text(size = 5))
+```
+
+
+# Next Steps
+
+## What Remains
+
+**For the final presentation (April 30):**
+
+- Run `master.R` fully to reproduce all figures exactly as they appear in the paper
+- Compare our replicated figures side by side with the paper's originals
+- Discuss where replication succeeded and where any differences appeared
+- Deeper walkthrough of the econometric foundations of the confidence set method
+
+**Remaining code to cover:**
+
+- `data/Repec/cleandata.R` — how the raw RePEC text file is processed
+- `data/Repec/keeptop100.R` — how the top 100 universities are selected
+- `data/journal IF/journalranking.R` — the full ranking script with all appendix figures
