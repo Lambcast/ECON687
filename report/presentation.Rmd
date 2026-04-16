@@ -315,9 +315,9 @@ ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
        subtitle = "95% marginal confidence sets for ranks")
 ```
 
-## Figure 2 — University Rankings
+## {.flexbox .vcenter}
 
-```{r figure2, fig.height=4.5, fig.width=9, echo=FALSE}
+```{r figure2, fig.height=6.5, fig.width=8, echo=FALSE}
 Sigma_u <- diag(unis$IFse^2)
 CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
                           stepdown=TRUE, simul=FALSE, R=1000, seed=101)
