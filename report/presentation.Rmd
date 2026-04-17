@@ -82,38 +82,57 @@ The main takeaway: point rankings overstate what the data can actually tell us.
 
 # The Data
 
-## Two Datasets, No External Access Required
+## Journal Data — What the Raw Excel Looks Like
 
-Both datasets are included in the replication package.
+One sheet per journal, one row per article. Columns are years of citations received.
 
-| Dataset | Source | File |
-|---|---|---|
-| Journal impact factors | Stern (2013) | `data/journal IF/JEL_Data.xlsx` |
-| University publications | Zimmermann (2013) | `data/Repec/top100unis.csv` |
-
-David Stern assembled the journal citation data and shared it directly with the
-authors. Christian Zimmermann maintains RePEC (Research Papers in Economics),
-a database of economists' affiliations and publications, and shared the
-underlying data.
-
-## Journal Data — The Wrangling Problem
-
-The raw Excel file is not a flat table. It has 233 sheets, one per journal.
-Each sheet has rows for individual articles and columns for years, recording
-how many citations each article received each year.
-
-```{r show-import, eval=FALSE}
-# You cannot just read_excel() this file and get something usable.
-# The authors' convertdata.R loops through all 233 sheets,
-# extracts the mean and SE from the summary rows at the bottom,
-# and assembles a single clean data frame saved as IFdata.RData.
-
-sheet_names <- excel_sheets(file.path("data", "journal IF", "JEL_Data.xlsx"))
-length(sheet_names)  # 233 sheets
+```
+| Avg/yr | ... | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 |
+|--------|-----|------|------|------|------|------|------|
+| 4.14   | ... | 2    | 1    | 8    | 3    | 7    | 6    |
+| 9.57   | ... | 8    | 8    | 8    | 10   | 18   | 12   |
+| 2.57   | ... | 0    | 4    | 6    | 3    | 1    | 3    |
+| 14.71  | ... | 0    | 3    | 12   | 23   | 24   | 31   |
 ```
 
-By the time we load `IFdata.RData`, the hard work is done. We get a clean
-232-row data frame with columns: `journal`, `IF`, `SE`, `sigma`, `n`.
+The impact factor is the average citations received in 2011 per article.
+`convertdata.R` loops through all 233 sheets and computes mean and SE for each.
+
+## Journal Data — convertdata.R
+
+```{r show-convertdata, eval=FALSE}
+for (s in sheetnames[-1]) {
+  X <- as.data.frame(mylist[s])             # load one journal's sheet
+  X <- X[-((nrow(X)-3):nrow(X)),]           # drop the summary rows at the bottom
+  col2011 <- names(X)[lastcharscn==".2011"] # find the 2011 column by name
+
+  journalIF <- rbind(journalIF,             # stack results row by row
+    c(mean(X[, col2011]),                   # impact factor = mean citations in 2011
+      sd(X[, col2011]) / sqrt(nrow(X)),     # SE = sd / sqrt(n articles)
+      sd(X[, col2011]),                     # sigma = standard deviation
+      nrow(X)))                             # n = number of articles
+}
+```
+
+## RePEC Data — What the Raw File Looks Like
+
+One row per author per publication type. The affiliation field encodes
+institution code and weight. Columns are article-level impact factors or citation counts.
+
+```
+affiliation                          author  type  X1      X2      X3
+RePEc:edi:aabasch+1                  1       IF    8.8677  9.5333  1.7667
+RePEc:edi:aabasch+1                  1       CT    17      1       1
+RePEc:edi:aabasch+*RePEc:edi:faphijo+*  2    IF    0.3513  0.9251  0.3513
+```
+
+- `+1` = full weight assigned to this institution
+- `+*` = weight unspecified, author has multiple affiliations
+- Each author has two rows — one IF row and one CT row
+
+`cleandata.R` parses the affiliation strings, computes weighted averages per
+institution, aggregates across all authors, and removes non-universities.
+`keeptop100.R` filters to the top 100 and saves `top100unis.csv`.
 
 ## Journal Data — Filtering to the KMS 30
 
