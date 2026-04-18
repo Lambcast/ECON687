@@ -7,6 +7,8 @@
 # University of Maryland, Spring 2026
 ################################################################################
 
+
+
 ################################# Setup ########################################
 packages <- c("ggplot2", "dplyr", "readxl", "devtools")
 install.packages(setdiff(packages, rownames(installed.packages())))
