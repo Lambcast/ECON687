@@ -82,7 +82,7 @@ The main takeaway: point rankings overstate what the data can actually tell us.
 
 # The Data
 
-## Journal Data — What the Raw Excel Looks Like
+## Journal Data — What the Raw Excel Looks Like (Alan)
 
 One sheet per journal, one row per article. Columns are years of citations received.
 
@@ -98,7 +98,7 @@ One sheet per journal, one row per article. Columns are years of citations recei
 The impact factor is the average citations received in 2011 per article.
 `convertdata.R` loops through all 233 sheets and computes mean and SE for each.
 
-## Journal Data — convertdata.R
+## Journal Data — convertdata.R (Alan)
 
 ```{r show-convertdata, eval=FALSE}
 for (s in sheetnames[-1]) {
@@ -114,27 +114,7 @@ for (s in sheetnames[-1]) {
 }
 ```
 
-## RePEC Data — What the Raw File Looks Like
-
-One row per author per publication type. The affiliation field encodes
-institution code and weight. Columns are article-level impact factors or citation counts.
-
-```
-affiliation                          author  type  X1      X2      X3
-RePEc:edi:aabasch+1                  1       IF    8.8677  9.5333  1.7667
-RePEc:edi:aabasch+1                  1       CT    17      1       1
-RePEc:edi:aabasch+*RePEc:edi:faphijo+*  2    IF    0.3513  0.9251  0.3513
-```
-
-- `+1` = full weight assigned to this institution
-- `+*` = weight unspecified, author has multiple affiliations
-- Each author has two rows — one IF row and one CT row
-
-`cleandata.R` parses the affiliation strings, computes weighted averages per
-institution, aggregates across all authors, and removes non-universities.
-`keeptop100.R` filters to the top 100 and saves `top100unis.csv`.
-
-## Journal Data — Filtering to the KMS 30
+## Journal Data — Filtering to the KMS 30 (Alan)
 
 The paper focuses on 30 journals pre-selected by Kalaitzidakis, Mamuneas &
 Stengos (2003), an earlier study identifying leading outlets in economics.
@@ -160,7 +140,70 @@ jIF <- journalIF %>%
 cat("Journals matched:", nrow(jIF), "of 30")
 ```
 
-## Journal Data — Descriptive Statistics
+## Journal Data — What We Are Working With (Alan)
+
+```{r journal-table}
+jIF %>%
+  select(Rank = rank, Journal = journal, IF, SE, N_articles = n) %>%
+  mutate(IF = round(IF, 3), SE = round(SE, 3)) %>%
+  head(10) %>%
+  knitr::kable(caption = "Top 10 journals by 2011 impact factor")
+```
+
+## RePEC Data — What the Raw File Looks Like (Alan)
+
+One row per author per publication type. The affiliation field encodes
+institution code and weight. Columns are article-level impact factors or citation counts.
+
+```
+affiliation                             author  type  X1      X2      X3
+RePEc:edi:aabasch+1                     1       IF    8.8677  9.5333  1.7667
+RePEc:edi:aabasch+1                     1       CT    17      1       1
+RePEc:edi:aabasch+*RePEc:edi:faphijo+*  2       IF    0.3513  0.9251  0.3513
+```
+
+- `+1` = full weight assigned to this institution
+- `+*` = weight unspecified, author has multiple affiliations
+- Each author has two rows — one IF row and one CT row
+
+`cleandata.R` parses the affiliation strings, computes weighted averages per
+institution, aggregates across all authors, and removes non-universities.
+`keeptop100.R` filters to the top 100 and saves `top100unis.csv`.
+
+## University Data — Loading and Wrangling (Alan)
+
+The university data required less wrangling than the journal data. By the time
+we load `top100unis.csv` the authors' cleaning scripts have already computed
+average impact factors and standard errors per university.
+
+```{r load-university-data}
+unis <- read.csv(file.path("data", "Repec", "top100unis.csv")) %>%
+  filter(!is.na(IFmean)) %>%       # remove any missing values
+  arrange(desc(IFmean)) %>%         # sort highest impact factor first
+  mutate(rank = row_number())       # assign point ranks 1 through 100
+
+# IFmean = average IF of publications by authors affiliated with that university
+# IFse   = standard error of that average
+# n      = number of affiliated authors in RePEC
+
+cat("Universities:", nrow(unis), "| Total authors:", sum(unis$n))
+```
+
+## University Data — What We Are Working With (Alan)
+
+```{r university-table}
+unis %>%
+  slice(1:10) %>%
+  select(Rank = rank, University = name, IFmean, IFse, N_authors = n) %>%
+  mutate(IFmean = round(IFmean, 3), IFse = round(IFse, 3)) %>%
+  knitr::kable(caption = "Top 10 universities by average impact factor")
+```
+
+
+# Descriptive Statistics
+<!-- Linna: feel free to rename this section header if something fits better -->
+
+## Journal Descriptive Statistics (Linna)
 
 ```{r journal-summary}
 jall <- journalIF %>% filter(!is.na(IF), IF > 0)
@@ -178,59 +221,20 @@ cat("Mean SE:  ", round(mean(jIF$SE), 4), "\n")
 cat("Range:    [", round(min(jIF$IF), 4), ",", round(max(jIF$IF), 4), "]\n")
 ```
 
-## Journal Data — What We Are Working With
-
-```{r journal-table}
-jIF %>%
-  select(Rank = rank, Journal = journal, IF, SE, N_articles = n) %>%
-  mutate(IF = round(IF, 3), SE = round(SE, 3)) %>%
-  head(10) %>%
-  knitr::kable(caption = "Top 10 journals by 2011 impact factor")
-```
-
-## University Data — Already Clean
-
-The university data required less wrangling. The authors' `cleandata.R` and
-`keeptop100.R` scripts processed the raw RePEC text file upstream. By the time
-we load `top100unis.csv` it is ready to use: 100 universities with average
-impact factors and standard errors already computed.
-
-```{r load-university-data}
-unis <- read.csv(file.path("data", "Repec", "top100unis.csv")) %>%
-  filter(!is.na(IFmean)) %>%
-  arrange(desc(IFmean)) %>%
-  mutate(rank = row_number())
-
-# IFmean = average IF of publications by authors affiliated with that university
-# IFse   = standard error of that average
-# n      = number of affiliated authors in RePEC
-
-cat("Universities:", nrow(unis), "| Total authors:", sum(unis$n))
-```
-
-## University Data — Descriptive Statistics
+## University Descriptive Statistics (Linna)
 
 ```{r university-summary}
+cat("--- 100 Universities ---\n")
 cat("Mean IFmean:  ", round(mean(unis$IFmean), 4), "\n")
 cat("Median IFmean:", round(median(unis$IFmean), 4), "\n")
 cat("SD of IFmean: ", round(sd(unis$IFmean), 4), "\n")
 cat("Mean IFse:    ", round(mean(unis$IFse), 4), "\n")
+cat("Total authors:", sum(unis$n), "\n")
 cat("IF range:     [", round(min(unis$IFmean), 4), ",",
                        round(max(unis$IFmean), 4), "]\n")
 ```
 
-```{r university-table}
-unis %>%
-  slice(1:10) %>%
-  select(Rank = rank, University = name, IFmean, IFse, N_authors = n) %>%
-  mutate(IFmean = round(IFmean, 3), IFse = round(IFse, 3)) %>%
-  knitr::kable(caption = "Top 10 universities by average impact factor")
-```
-
-
-# The Code
-
-## The Full Pipeline
+## The Full Pipeline (Linna)
 
 ```
 data/journal IF/convertdata.R     # Excel (233 sheets) -> IFdata.RData
@@ -240,14 +244,30 @@ data/Repec/keeptop100.R           # filter to top 100 universities
 data/Repec/emp.topunis.R          # confidence sets -> Figure 2
 ```
 
-Our `code/00_data_check.R` runs the key steps independently to verify
-the pipeline without running the full `master.R`.
-
 The four-step logic repeated for both datasets:
 
 > **Load clean data, filter to sample, run bootstrap, plot results**
 
-## The Key Statistical Step — csranks
+## Linna's Placeholder
+
+*Linna — add your additional slides here. Some starting points if helpful:*
+
+*- What is a confidence set and how does it differ from a confidence interval?*
+*- Why does ranking uncertainty matter in practice?*
+*- The formal coverage guarantee and what 95% means in this context*
+
+## Marginal vs. Simultaneous (Linna)
+
+`simul = FALSE` produces **marginal** confidence sets. Each journal's set
+covers its true rank with 95% probability on its own.
+
+`simul = TRUE` produces **simultaneous** sets. All true ranks are covered
+jointly at 95%. These are wider because the guarantee is stronger.
+
+The paper shows both. Figure 1 uses marginal sets. The appendix shows
+simultaneous sets for comparison. We replicate both.
+
+## The Key Statistical Step — csranks (Linna)
 
 ```{r show-csranks, eval=FALSE}
 # Step 1: build a covariance matrix from the standard errors
@@ -271,7 +291,10 @@ jIF$CSL <- CS$L   # lower bound of rank confidence set
 jIF$CSU <- CS$U   # upper bound of rank confidence set
 ```
 
-## From Bootstrap Output to Figure
+
+# The Figures
+
+## From Bootstrap Output to Figure (Jason)
 
 Once `csranks()` returns the bounds, the figure follows directly.
 The bounds become the error bar limits in ggplot.
@@ -286,7 +309,7 @@ ggplot(jIF, aes(x = rank, y = reorder(journal, rank))) +
   ) +
   scale_x_continuous(
     name = "Rank",
-    limits = c(1, 30),
+    limits = c(1, 32),
     breaks = c(1, 5, 10, 15, 20, 25, 30)
   ) +
   ylab(NULL)
@@ -295,21 +318,7 @@ ggplot(jIF, aes(x = rank, y = reorder(journal, rank))) +
 The x-axis is rank, not impact factor. The horizontal bars show the range of
 ranks the data cannot rule out for each journal at the 95% level.
 
-## Marginal vs. Simultaneous
-
-`simul = FALSE` produces **marginal** confidence sets. Each journal's set
-covers its true rank with 95% probability on its own.
-
-`simul = TRUE` produces **simultaneous** sets. All true ranks are covered
-jointly at 95%. These are wider because the guarantee is stronger.
-
-The paper shows both. Figure 1 uses marginal sets. The appendix shows
-simultaneous sets for comparison. We replicate both.
-
-
-# The Figures
-
-## Figure 1 — Journal Rankings
+## Figure 1 — Journal Rankings (Jason)
 
 ```{r figure1, fig.height=4.5, fig.width=9, echo=FALSE}
 cs_path <- file.path("data", "journal IF", "journalIFrankings.RData")
@@ -327,16 +336,42 @@ ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
   theme_bw() +
   geom_point(size = 2) +
   geom_errorbar(aes(xmin = margCSL, xmax = margCSU), width = 0.4) +
-  scale_x_continuous(name = "Rank", limits = c(1,30),
+  scale_x_continuous(name = "Rank", limits = c(1,32),
                      breaks = c(1, 5, 10, 15, 20, 25, 30)) +
   ylab(NULL) +
   labs(title = "Ranking of 30 Journals by 2011 Impact Factor",
        subtitle = "95% marginal confidence sets for ranks")
 ```
 
-## {.flexbox .vcenter}
+## Figure 2 — University Rankings Code (Jason)
 
-```{r figure2, fig.height=6.5, fig.width=8, echo=FALSE}
+Same structure as Figure 1 but applied to 100 universities. The csranks
+bootstrap runs first, then the bounds feed directly into ggplot.
+
+```{r show-plot2, eval=FALSE}
+# run bootstrap for university ranks
+Sigma_u <- diag(unis$IFse^2)
+CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
+                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+unis$margCSL <- CS_u$L
+unis$margCSU <- CS_u$U
+
+# plot - same pattern as Figure 1, scaled to 100 universities
+ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
+  theme_bw() +
+  geom_point(size = 0.7) +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU), width = 0.4) +
+  scale_x_continuous(name = "Rank", limits = c(1,100),
+                     breaks = c(1, seq(10,100,by=10))) +
+  ylab(NULL) +
+  labs(title = "Ranking of 100 Universities by Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks") +
+  theme(axis.text.y = element_text(size = 5))
+```
+
+## Figure 2 — University Rankings (Jason)
+
+```{r figure2, fig.height=6.5, fig.width=7, echo=FALSE}
 Sigma_u <- diag(unis$IFse^2)
 CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
                           stepdown=TRUE, simul=FALSE, R=1000, seed=101)
@@ -355,7 +390,7 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
   theme(axis.text.y = element_text(size = 5))
 ```
 
-## What the Figures Tell Us
+## What the Figures Tell Us (Jason)
 
 Both figures show the same pattern the paper describes:
 
@@ -372,11 +407,11 @@ the precision of what we actually know.**
 
 # Replication Notes
 
-## What We Reproduced
+## What We Reproduced (Jason)
 
-Both main figures match the paper. The confidence set bounds were computed
-using the same `csranks` package the authors wrote, with identical parameters
-and the same random seed (101) for reproducibility.
+Both main figures match the paper exactly. The confidence set bounds were
+computed using the same `csranks` package the authors wrote, with identical
+parameters and the same random seed (101) for reproducibility.
 
 One technical issue we worked through: the current version of `csranks`
 requires a covariance matrix rather than a vector of standard errors. The fix:
@@ -392,9 +427,8 @@ csranks(jIF$IF, Sigma = diag(jIF$SE^2), ...)
 This reflects a deliberate API change by the authors to make the independence
 assumption explicit rather than assumed silently.
 
-## What Remains for the Final Report
+## What Remains for the Final Report (Jason)
 
-- Written discussion of the econometric foundations of the confidence set method
-- Side-by-side comparison of our figures with the paper's originals
-- Walkthrough of the RePEC cleaning scripts (`cleandata.R`, `keeptop100.R`)
-- Discussion of replication success and any remaining differences
+- Full written discussion of the econometric foundations of the method
+- Additional figures from the companion Review of Economic Studies paper
+- Discussion of replication success and remaining differences
