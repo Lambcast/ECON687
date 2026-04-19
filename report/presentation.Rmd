@@ -200,10 +200,17 @@ unis %>%
 ```
 
 
-# Descriptive Statistics
+# descriptive statistics
 <!-- Linna: feel free to rename this section header if something fits better -->
 
-## Journal Descriptive Statistics (Linna)
+## The Core Econometric Problem — Defining "True Rank"
+
+* **The Problem:** We observe estimated impact factors, not the "true" population impact factors.  
+* Therefore, any ranking is subject to statistical uncertainty. 
+* **The Parameter of Interest (True Rank):** \
+![Rank Formula](/Users/linna/ECON687/images/rankformula.png){width="70%"}
+
+## Journal Data - Summary Statistics
 
 ```{r journal-summary}
 jall <- journalIF %>% filter(!is.na(IF), IF > 0)
