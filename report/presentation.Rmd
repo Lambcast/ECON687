@@ -200,17 +200,31 @@ unis %>%
 ```
 
 
-# descriptive statistics
+# descriptive statistics (Linna)
 <!-- Linna: feel free to rename this section header if something fits better -->
 
 ## The Core Econometric Problem — Defining "True Rank"
 
 * **The Problem:** We observe estimated impact factors, not the "true" population impact factors.  
 * Therefore, any ranking is subject to statistical uncertainty. 
-* **The Parameter of Interest (True Rank):** \
-![Rank Formula](/Users/linna/ECON687/images/rankformula.png){width="70%"}
+* **To define a rigorous rank, we must clear a fundamental statistical hurdle:** \
 
-## Journal Data - Summary Statistics
+$$r_i = 1 + \sum_{j \neq i} \mathbb{I}(\theta_j > \theta_i)$$
+
+| **Parameter $(\theta)$:** | **Indicator $\mathbb{I}(\cdot)$:** | **The Rank $(r_i)$:** |
+| :--- | :--- | :--- |
+| The **true**, unobservable quality score of University $i$ and $j$. This is the noise-free value we wish we knew. | A binary variable. It returns **1** if $\theta_j > \theta_i$ (the "better-than" test) and **0** otherwise. | The sum counts how many schools $j$ are better than $i$. The "+1" ensures the top school is Rank 1. |
+
+
+<!-- How do we define a 'True Rank'? If we denote the true performance of an institution i as θi,its true rank is simply 1 plus the number of other institutions that have a strictly better performance. -->
+
+<!-- To see how this works in practice, let's use a local example. Imagine we are comparing UMD alongside another university right here in the DMV, like George Mason. UMD is our institution i. The indicator function here—the math inside the summation—asks a simple yes-or-no question for every other university j: 'Is your true score strictly higher than UMD's?' -->
+
+<!-- If George Mason does have a strictly higher true score, the indicator returns a 1, which gets added to the sum, pushing UMD's rank down by one spot. If UMD is higher, it returns a 0. We do this for every school in our dataset. If exactly 14 schools trigger that '1', then UMD's rank is 1 plus 14, placing it at rank 15. -->
+
+<!-- The formula is perfectly straightforward. However, because we don't have the luxury of knowing the true θ—we only have our statistical estimates—our calculated ranks are inherently uncertain. We need a way to quantify that uncertainty when schools like UMD and George Mason are statistically tied. -->
+
+## Journal Data - Summary Statistics (Linna)
 
 ```{r journal-summary}
 jall <- journalIF %>% filter(!is.na(IF), IF > 0)
@@ -228,6 +242,8 @@ cat("Mean SE:  ", round(mean(jIF$SE), 4), "\n")
 cat("Range:    [", round(min(jIF$IF), 4), ",", round(max(jIF$IF), 4), "]\n")
 ```
 
+<!-- Looking at the summary statistics for our journal dataset, the key takeaway is the substantial variance present across the performance metrics. It is exactly this underlying statistical noise that makes assigning a definitive, ordinal rank based purely on point estimates so problematic. -->
+
 ## University Descriptive Statistics (Linna)
 
 ```{r university-summary}
@@ -241,6 +257,8 @@ cat("IF range:     [", round(min(unis$IFmean), 4), ",",
                        round(max(unis$IFmean), 4), "]\n")
 ```
 
+<!-- As you can see here, our 100 universities are tightly packed around a median score of 10, but the standard errors at the bottom are large enough to blur the lines between them. Just eye-balling this, we can tell there is significant statistical overlap. It’s impossible to just sort these scores 1 through 100. So, how do we actually handle this overlap rigorously? Before I show you the specific formulas, let's look at the overarching strategy we use to process this.-->
+
 ## The Full Pipeline (Linna)
 
 ```
@@ -250,29 +268,36 @@ data/Repec/cleandata.R            # raw RePEC text -> cleaned data
 data/Repec/keeptop100.R           # filter to top 100 universities
 data/Repec/emp.topunis.R          # confidence sets -> Figure 2
 ```
-
 The four-step logic repeated for both datasets:
 
 > **Load clean data, filter to sample, run bootstrap, plot results**
 
-## Linna's Placeholder
+<!-- To solve this, we built a 4-step pipeline that feeds these noisy impact factors into the authors' csranks package. We supply the covariance matrix, run a step-down bootstrap with 1,000 draws, and output the upper and lower rank bounds—which Jason will show you visually later. -->
 
-*Linna — add your additional slides here. Some starting points if helpful:*
 
-*- What is a confidence set and how does it differ from a confidence interval?*
-*- Why does ranking uncertainty matter in practice?*
-*- The formal coverage guarantee and what 95% means in this context*
+## The Deep Dive: Confidence Sets (Linna)
 
-## Marginal vs. Simultaneous (Linna)
+To define a rigorous rank, we must clear a fundamental statistical hurdle. For any two institutions $i$ and $j$, we test if their estimated performance gap is distinct from the statistical noise:
 
-`simul = FALSE` produces **marginal** confidence sets. Each journal's set
-covers its true rank with 95% probability on its own.
+$$Z_{i,j} = \left| \frac{\widehat{\theta}_j - \widehat{\theta}_i}{SE_{i,j}} \right| > cv$$
 
-`simul = TRUE` produces **simultaneous** sets. All true ranks are covered
-jointly at 95%. These are wider because the guarantee is stronger.
+We face a critical choice in how we set that critical value ($cv$):
 
-The paper shows both. Figure 1 uses marginal sets. The appendix shows
-simultaneous sets for comparison. We replicate both.
+| Marginal Confidence Sets | Simultaneous Confidence Sets |
+| :--- | :--- |
+| **The Choice:** Use the standard critical value (e.g., $cv \approx 1.96$). | **The Choice:** Use an adjusted $cv$ calculated for joint estimation. |
+| **Posing:** Answers: *"Does this single university belong in the Top 10?"* | **Posing:** Answers: *"Are all these ranks accurate relative to one another with 95% confidence?"* |
+| **Danger:** High "False Discovery Rate" when ranking many institutions at once. | **Required:** Essential for rigorous, full-dataset rank reporting. |
+
+<!-- Transition and The Statistical Hurdle: -->
+<!-- Now that we’ve seen the Full Pipeline, you’ll notice that the most critical stage happens at the very end: moving from raw estimates to defensible ranks. To understand how we do that, we need to look at the specific statistical hurdle we have to clear. To determine if one institution is truly better than another, we use the test statistic shown at the top of the slide. We calculate the difference between two estimates, divide by their joint standard error, and check if that value clears a specific critical value, or cv. -->
+
+<!-- Comparing Marginal and Simultaneous Sets: -->
+<!-- The choice of that cv is where the econometric rigor of this paper lives. On the left, we have Marginal Confidence Sets, which use the standard critical value of approximately 1.96. While this is fine for comparing two schools in a vacuum, using it for a full list of 100 schools leads to a massive False Discovery Rate. By pure statistical chance, you would claim ranks are different when they are actually just noise. On the right, we have our preferred method: Simultaneous Confidence Sets. Here, we adjust the critical value to account for the entire distribution at once, ensuring we don't overstate our certainty. -->
+
+<!-- Closing and Next Step: -->
+<!-- This adjustment is the only way to state, with 95% confidence, that the entire list of rankings is accurate relative to one another. It transforms our results from a simple list into a statistically robust model that accounts for the inherent uncertainty in our data. So, let’s see how this math translates into the final R implementation using the csranks package. -->
+
 
 ## The Key Statistical Step — csranks (Linna)
 
@@ -298,6 +323,11 @@ jIF$CSL <- CS$L   # lower bound of rank confidence set
 jIF$CSU <- CS$U   # upper bound of rank confidence set
 ```
 
+<!-- Now, how do we actually put all this math into practice? We use an R package called csranks, which is specifically built to handle these kinds of complex rankings. This function is essentially the 'engine' of our project—it takes our raw data and standard errors and does the heavy lifting to find the true ranking windows. -->
+
+<!-- If you look at the code on the screen, keep an eye on the line that says simul = FALSE. This is the default starting point for most researchers. It produces what we call Marginal Confidence Sets. Essentially, the software is looking at each journal one by one, almost as if they exist in a vacuum. It calculates a 95% certainty window for each specific journal without worrying about how it relates to the rest of the group. It's a useful first look, but it doesn't give us the full picture of the uncertainty across the entire list. -->
+
+<!-- In our replication, the real 'game-changer' is when we flip that switch to TRUE. That one tiny change tells the software to use the tougher statistical hurdle we just talked about. It shifts the focus from individual journals to the entire system at once. By showing both versions, we can see exactly how our confidence holds up when we move from a narrow view to a rigorous, collective one. With that setup in mind, I'll pass it over to my teammate to show you what these rankings actually look like in the final plots. -->
 
 # The Figures
 
