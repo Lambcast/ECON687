@@ -464,8 +464,6 @@ csranks(jIF$IF, Sigma = diag(jIF$SE^2), ...)
 This reflects a deliberate API change by the authors to make the independence
 assumption explicit rather than assumed silently.
 
-## What Remains for the Final Report (Jason)
+## What Remains
 
-- Full written discussion of the econometric foundations of the method
-- Additional figures from the companion Review of Economic Studies paper
-- Discussion of replication success and remaining differences
+- Additional figures from the companion paper as time permits
