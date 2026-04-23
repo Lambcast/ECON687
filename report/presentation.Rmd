@@ -467,3 +467,4 @@ assumption explicit rather than assumed silently.
 ## What Remains
 
 - Additional figures from the companion paper as time permits
+- full report of replication successes and failures
