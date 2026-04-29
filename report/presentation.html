@@ -3304,13 +3304,7 @@ cat(&quot;Journals matched:&quot;, nrow(jIF), &quot;of 30&quot;)</pre>
 
 <pre >## Journals matched: 30 of 30</pre>
 
-</article></slide><slide class=""><hgroup><h2>Journal Data — What We Are Working With (Alan)</h2></hgroup><article  id="journal-data-what-we-are-working-with-alan" class="smaller ">
-
-<pre class = 'prettyprint lang-r'>jIF %&gt;%
-  select(Rank = rank, Journal = journal, IF, SE, N_articles = n) %&gt;%
-  mutate(IF = round(IF, 3), SE = round(SE, 3)) %&gt;%
-  head(10) %&gt;%
-  knitr::kable(caption = &quot;Top 10 journals by 2011 impact factor&quot;)</pre>
+</article></slide><slide class=""><hgroup><h2>Journal Data — Useable form (Alan)</h2></hgroup><article  id="journal-data-useable-form-alan" class="smaller ">
 
 <table class = 'rmdtable'>
 <caption>Top 10 journals by 2011 impact factor</caption>
@@ -3427,13 +3421,7 @@ cat(&quot;Universities:&quot;, nrow(unis), &quot;| Total authors:&quot;, sum(uni
 
 <pre >## Universities: 100 | Total authors: 247804</pre>
 
-</article></slide><slide class=""><hgroup><h2>University Data — What We Are Working With (Alan)</h2></hgroup><article  id="university-data-what-we-are-working-with-alan" class="smaller ">
-
-<pre class = 'prettyprint lang-r'>unis %&gt;%
-  slice(1:10) %&gt;%
-  select(Rank = rank, University = name, IFmean, IFse, N_authors = n) %&gt;%
-  mutate(IFmean = round(IFmean, 3), IFse = round(IFse, 3)) %&gt;%
-  knitr::kable(caption = &quot;Top 10 universities by average impact factor&quot;)</pre>
+</article></slide><slide class=""><hgroup><h2>University Data — Useable form (Alan)</h2></hgroup><article  id="university-data-useable-form-alan" class="smaller ">
 
 <table class = 'rmdtable'>
 <caption>Top 10 universities by average impact factor</caption>

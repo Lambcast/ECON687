@@ -140,9 +140,9 @@ jIF <- journalIF %>%
 cat("Journals matched:", nrow(jIF), "of 30")
 ```
 
-## Journal Data — What We Are Working With (Alan)
+## Journal Data — Useable form (Alan)
 
-```{r journal-table}
+```{r journal-table, echo=FALSE}
 jIF %>%
   select(Rank = rank, Journal = journal, IF, SE, N_articles = n) %>%
   mutate(IF = round(IF, 3), SE = round(SE, 3)) %>%
@@ -189,9 +189,9 @@ unis <- read.csv(file.path("data", "Repec", "top100unis.csv")) %>%
 cat("Universities:", nrow(unis), "| Total authors:", sum(unis$n))
 ```
 
-## University Data — What We Are Working With (Alan)
+## University Data — Useable form (Alan)
 
-```{r university-table}
+```{r university-table, echo=FALSE}
 unis %>%
   slice(1:10) %>%
   select(Rank = rank, University = name, IFmean, IFse, N_authors = n) %>%
