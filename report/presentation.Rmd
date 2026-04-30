@@ -423,8 +423,7 @@ ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
   labs(title = "Figure 1: Ranking of 30 Journals by 2011 Impact Factor",
        subtitle = "95% marginal confidence sets for ranks")
 ```
-The x-axis is rank, not impact factor. The horizontal bars show the range of
-ranks the data cannot rule out for each journal at the 95% level.
+
 
 ## Figure 1 — Journal Rankings (alt-view)
 
