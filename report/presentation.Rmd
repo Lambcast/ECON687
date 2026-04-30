@@ -399,13 +399,47 @@ ggplot(jIF, aes(x = rank, y = reorder(journal, rank))) +
   ) +
   ylab(NULL)
 ```
+## Figure 1 — Journal Rankings
 
+```{r figure1, fig.height=5.5, fig.width=9, echo=FALSE}
+cs_path <- file.path("data", "journal IF", "journalIFrankings.RData")
+if (file.exists(cs_path)) {
+  load(cs_path)
+  plot_data <- journalIF.top30
+} else {
+  Sigma <- diag(jIF$SE^2)
+  CS <- csranks::csranks(jIF$IF, Sigma=Sigma, coverage=0.95,
+                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+  plot_data <- jIF %>% mutate(margCSL = CS$L, margCSU = CS$U)
+}
+
+ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
+  theme_bw() +
+  geom_point(size = 2) +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU), width = 0.4) +
+  scale_x_continuous(name = "Rank", limits = c(1,32),
+                     breaks = c(1, 5, 10, 15, 20, 25, 30)) +
+  ylab(NULL) +
+  labs(title = "Figure 1: Ranking of 30 Journals by 2011 Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks")
+```
 The x-axis is rank, not impact factor. The horizontal bars show the range of
 ranks the data cannot rule out for each journal at the 95% level.
 
 ## Figure 1 — Journal Rankings (alt-view)
 
 ```{r figure1b, fig.height=4.5, fig.width=9, echo=FALSE}
+cs_path <- file.path("data", "journal IF", "journalIFrankings.RData")
+if (file.exists(cs_path)) {
+  load(cs_path)
+  plot_data <- journalIF.top30
+} else {
+  Sigma <- diag(jIF$SE^2)
+  CS <- csranks::csranks(jIF$IF, Sigma=Sigma, coverage=0.95,
+                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+  plot_data <- jIF %>% mutate(margCSL = CS$L, margCSU = CS$U)
+}
+
 plot_data$span <- plot_data$margCSU - plot_data$margCSL + 1
 plot_data$span_cat <- cut(plot_data$span,
                           breaks = c(-Inf, 5, 10, 20, Inf),
