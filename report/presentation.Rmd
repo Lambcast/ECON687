@@ -82,7 +82,7 @@ The main takeaway: point rankings overstate what the data can actually tell us.
 
 # The Data
 
-## Journal Data — What the Raw Excel Looks Like (Alan)
+## Journal Data — What the Raw Excel Looks Like
 
 One sheet per journal, one row per article. Columns are years of citations received.
 
@@ -98,7 +98,7 @@ One sheet per journal, one row per article. Columns are years of citations recei
 The impact factor is the average citations received in 2011 per article.
 `convertdata.R` loops through all 233 sheets and computes mean and SE for each.
 
-## Journal Data — convertdata.R (Alan)
+## Journal Data — convertdata.R
 
 ```{r show-convertdata, eval=FALSE}
 for (s in sheetnames[-1]) {
@@ -114,7 +114,7 @@ for (s in sheetnames[-1]) {
 }
 ```
 
-## Journal Data — Filtering to the KMS 30 (Alan)
+## Journal Data — Filtering to the KMS 30
 
 The paper focuses on 30 journals pre-selected by Kalaitzidakis, Mamuneas &
 Stengos (2003), an earlier study identifying leading outlets in economics.
@@ -140,7 +140,7 @@ jIF <- journalIF %>%
 cat("Journals matched:", nrow(jIF), "of 30")
 ```
 
-## Journal Data — Useable form (Alan)
+## Journal Data — Useable form
 
 ```{r journal-table, echo=FALSE}
 jIF %>%
@@ -150,7 +150,7 @@ jIF %>%
   knitr::kable(caption = "Top 10 journals by 2011 impact factor")
 ```
 
-## RePEC Data — What the Raw File Looks Like (Alan)
+## RePEC Data — What the Raw File Looks Like
 
 One row per author per publication type. The affiliation field encodes
 institution code and weight. Columns are article-level impact factors or citation counts.
@@ -170,7 +170,7 @@ RePEc:edi:aabasch+*RePEc:edi:faphijo+*  2       IF    0.3513  0.9251  0.3513
 institution, aggregates across all authors, and removes non-universities.
 `keeptop100.R` filters to the top 100 and saves `top100unis.csv`.
 
-## University Data — Loading and Wrangling (Alan)
+## University Data — Loading and Wrangling
 
 The university data required less wrangling than the journal data. By the time
 we load `top100unis.csv` the authors' cleaning scripts have already computed
@@ -189,7 +189,7 @@ unis <- read.csv(file.path("data", "Repec", "top100unis.csv")) %>%
 cat("Universities:", nrow(unis), "| Total authors:", sum(unis$n))
 ```
 
-## University Data — Useable form (Alan)
+## University Data — Useable form
 
 ```{r university-table, echo=FALSE}
 unis %>%
@@ -200,7 +200,7 @@ unis %>%
 ```
 
 
-# descriptive statistics (Linna)
+# descriptive statistics
 <!-- Linna: feel free to rename this section header if something fits better -->
 
 ## The Core Econometric Problem — Defining "True Rank"
@@ -224,7 +224,7 @@ $$r_i = 1 + \sum_{j \neq i} \mathbb{I}(\theta_j > \theta_i)$$
 
 <!-- The formula is perfectly straightforward. However, because we don't have the luxury of knowing the true θ—we only have our statistical estimates—our calculated ranks are inherently uncertain. We need a way to quantify that uncertainty when schools like UMD and George Mason are statistically tied. -->
 
-## Journal Data - Summary Statistics (Linna)
+## Journal Data - Summary Statistics
 
 ```{r journal-summary}
 jall <- journalIF %>% filter(!is.na(IF), IF > 0)
@@ -244,7 +244,7 @@ cat("Range:    [", round(min(jIF$IF), 4), ",", round(max(jIF$IF), 4), "]\n")
 
 <!-- Looking at the summary statistics for our journal dataset, the key takeaway is the substantial variance present across the performance metrics. It is exactly this underlying statistical noise that makes assigning a definitive, ordinal rank based purely on point estimates so problematic. -->
 
-## University Descriptive Statistics (Linna)
+## University Descriptive Statistics
 
 ```{r university-summary}
 cat("--- 100 Universities ---\n")
@@ -259,7 +259,7 @@ cat("IF range:     [", round(min(unis$IFmean), 4), ",",
 
 <!-- As you can see here, our 100 universities are tightly packed around a median score of 10, but the standard errors at the bottom are large enough to blur the lines between them. Just eye-balling this, we can tell there is significant statistical overlap. It’s impossible to just sort these scores 1 through 100. So, how do we actually handle this overlap rigorously? Before I show you the specific formulas, let's look at the overarching strategy we use to process this.-->
 
-## The Full Pipeline (Linna)
+## The Full Pipeline
 
 ```
 data/journal IF/convertdata.R     # Excel (233 sheets) -> IFdata.RData
@@ -275,7 +275,7 @@ The four-step logic repeated for both datasets:
 <!-- To solve this, we built a 4-step pipeline that feeds these noisy impact factors into the authors' csranks package. We supply the covariance matrix, run a step-down bootstrap with 1,000 draws, and output the upper and lower rank bounds—which Jason will show you visually later. -->
 
 
-## The Deep Dive: Confidence Sets (Linna)
+## The Deep Dive: Confidence Sets
 
 To define a rigorous rank, we must clear a fundamental statistical hurdle. For any two institutions $i$ and $j$, we test if their estimated performance gap is distinct from the statistical noise:
 
@@ -299,7 +299,7 @@ We face a critical choice in how we set that critical value ($cv$):
 <!-- This adjustment is the only way to state, with 95% confidence, that the entire list of rankings is accurate relative to one another. It transforms our results from a simple list into a statistically robust model that accounts for the inherent uncertainty in our data. So, let’s see how this math translates into the final R implementation using the csranks package. -->
 
 
-## The Key Statistical Step — csranks (Linna)
+## The Key Statistical Step — csranks
 
 ```{r show-csranks, eval=FALSE}
 # Step 1: build a covariance matrix from the standard errors
@@ -331,7 +331,7 @@ jIF$CSU <- CS$U   # upper bound of rank confidence set
 
 # The Figures
 
-## From Bootstrap Output to Figure (Jason)
+## From Bootstrap Output to Figure
 
 Once `csranks()` returns the bounds, the figure follows directly.
 The bounds become the error bar limits in ggplot.
@@ -355,9 +355,9 @@ ggplot(jIF, aes(x = rank, y = reorder(journal, rank))) +
 The x-axis is rank, not impact factor. The horizontal bars show the range of
 ranks the data cannot rule out for each journal at the 95% level.
 
-## Figure 1 — Journal Rankings (Jason)
+##
 
-```{r figure1, fig.height=4.5, fig.width=9, echo=FALSE}
+```{r figure1, fig.height=5.5, fig.width=9, echo=FALSE}
 cs_path <- file.path("data", "journal IF", "journalIFrankings.RData")
 if (file.exists(cs_path)) {
   load(cs_path)
@@ -376,11 +376,11 @@ ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
   scale_x_continuous(name = "Rank", limits = c(1,32),
                      breaks = c(1, 5, 10, 15, 20, 25, 30)) +
   ylab(NULL) +
-  labs(title = "Ranking of 30 Journals by 2011 Impact Factor",
+  labs(title = "Figure 1: Ranking of 30 Journals by 2011 Impact Factor",
        subtitle = "95% marginal confidence sets for ranks")
 ```
 
-## Figure 2 — University Rankings Code (Jason)
+## Figure 2 — University Rankings Code
 
 Same structure as Figure 1 but applied to 100 universities. The csranks
 bootstrap runs first, then the bounds feed directly into ggplot.
@@ -406,9 +406,8 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
   theme(axis.text.y = element_text(size = 5))
 ```
 
-## Figure 2 — University Rankings (Jason)
-
-```{r figure2, fig.height=6.5, fig.width=7, echo=FALSE}
+***
+```{r figure2, fig.height=6.5, fig.width=9, echo=FALSE, fig.align='center'}
 Sigma_u <- diag(unis$IFse^2)
 CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
                           stepdown=TRUE, simul=FALSE, R=1000, seed=101)
@@ -422,12 +421,12 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
   scale_x_continuous(name = "Rank", limits = c(1,100),
                      breaks = c(1, seq(10,100,by=10))) +
   ylab(NULL) +
-  labs(title = "Ranking of 100 Universities by Impact Factor",
+  labs(title = "Figure 2: Ranking of 100 Universities by Impact Factor",
        subtitle = "95% marginal confidence sets for ranks") +
   theme(axis.text.y = element_text(size = 5))
 ```
 
-## What the Figures Tell Us (Jason)
+## What the Figures Tell Us
 
 Both figures show the same pattern the paper describes:
 
@@ -444,7 +443,7 @@ the precision of what we actually know.**
 
 # Replication Notes
 
-## What We Reproduced (Jason)
+## What We Reproduced
 
 Both main figures match the paper exactly. The confidence set bounds were
 computed using the same `csranks` package the authors wrote, with identical
