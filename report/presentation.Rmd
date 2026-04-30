@@ -403,30 +403,33 @@ ggplot(jIF, aes(x = rank, y = reorder(journal, rank))) +
 The x-axis is rank, not impact factor. The horizontal bars show the range of
 ranks the data cannot rule out for each journal at the 95% level.
 
-##
+## Figure 1 — Journal Rankings (alt-view)
 
-```{r figure1, fig.height=5.5, fig.width=9, echo=FALSE}
-cs_path <- file.path("data", "journal IF", "journalIFrankings.RData")
-if (file.exists(cs_path)) {
-  load(cs_path)
-  plot_data <- journalIF.top30
-} else {
-  Sigma <- diag(jIF$SE^2)
-  CS <- csranks::csranks(jIF$IF, Sigma=Sigma, coverage=0.95,
-                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
-  plot_data <- jIF %>% mutate(margCSL = CS$L, margCSU = CS$U)
-}
+```{r figure1b, fig.height=4.5, fig.width=9, echo=FALSE}
+plot_data$span <- plot_data$margCSU - plot_data$margCSL + 1
+plot_data$span_cat <- cut(plot_data$span,
+                          breaks = c(-Inf, 5, 10, 20, Inf),
+                          labels = c("<=5","6-10","11-20",">20"))
 
 ggplot(plot_data, aes(x = rank, y = reorder(journal, rank))) +
   theme_bw() +
-  geom_point(size = 2) +
-  geom_errorbar(aes(xmin = margCSL, xmax = margCSU), width = 0.4) +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU, colour = span_cat),
+                width = 0.4, size = 0.8, show.legend = TRUE) +
+  geom_point(aes(colour = span_cat), size = 2, show.legend = TRUE) +
+  scale_colour_manual(name = "Span (ranks)",
+                      values = c("<=5"   = "red",
+                                 "6-10"  = "black",
+                                 "11-20" = "orange",
+                                 ">20"   = "blue")) +
   scale_x_continuous(name = "Rank", limits = c(1,32),
                      breaks = c(1, 5, 10, 15, 20, 25, 30)) +
   ylab(NULL) +
-  labs(title = "Figure 1: Ranking of 30 Journals by 2011 Impact Factor",
-       subtitle = "95% marginal confidence sets for ranks")
+  labs(title = "Ranking of 30 Journals by 2011 Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks") +
+  theme(axis.text.y = element_text(size = 8),
+        legend.position = "right")
 ```
+
 
 ## Figure 2 — University Rankings Code
 
@@ -437,7 +440,7 @@ bootstrap runs first, then the bounds feed directly into ggplot.
 # run bootstrap for university ranks
 Sigma_u <- diag(unis$IFse^2)
 CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
-                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+                         stepdown=TRUE, simul=FALSE, R=1000, seed=101)
 unis$margCSL <- CS_u$L
 unis$margCSU <- CS_u$U
 
@@ -454,11 +457,12 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
   theme(axis.text.y = element_text(size = 5))
 ```
 
-***
-```{r figure2, fig.height=6.5, fig.width=9, echo=FALSE, fig.align='center'}
+## Figure 2 — University Rankings
+
+```{r figure2, fig.height=5.5, fig.width=9, echo=FALSE}
 Sigma_u <- diag(unis$IFse^2)
 CS_u <- csranks::csranks(unis$IFmean, Sigma=Sigma_u, coverage=0.95,
-                          stepdown=TRUE, simul=FALSE, R=1000, seed=101)
+                         stepdown=TRUE, simul=FALSE, R=1000, seed=101)
 unis$margCSL <- CS_u$L
 unis$margCSU <- CS_u$U
 
@@ -469,10 +473,89 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
   scale_x_continuous(name = "Rank", limits = c(1,100),
                      breaks = c(1, seq(10,100,by=10))) +
   ylab(NULL) +
-  labs(title = "Figure 2: Ranking of 100 Universities by Impact Factor",
+  labs(title = "Ranking of 100 Universities by Impact Factor",
        subtitle = "95% marginal confidence sets for ranks") +
-  theme(axis.text.y = element_text(size = 5))
+  theme(
+    axis.text.y = element_text(size = 5), 
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)) 
 ```
+
+## Figure 2 — University Rankings (alt-view)
+
+```{r figure2b, fig.height=5.5, fig.width=9, echo=FALSE}
+# compute span and categories
+unis$span <- unis$margCSU - unis$margCSL + 1
+unis$span_cat <- cut(unis$span,
+                     breaks = c(-Inf, 5, 10, 20, Inf),
+                     labels = c("<=5","6-10","11-20",">20"))
+
+# use full dataset (no top/bottom filter)
+# order factor for plotting (so y-axis shows best first at top)
+unis$name <- factor(unis$name, levels = unis$name[order(unis$rank)])
+
+library(ggplot2)
+ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
+  theme_bw() +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU, colour = span_cat),
+                width = 0.4, size = 0.6, show.legend = TRUE) +
+  geom_point(aes(colour = span_cat), size = 0.9, show.legend = TRUE) +
+  scale_colour_manual(name = "Span (ranks)",
+                      values = c("<=5"   = "red",
+                                 "6-10"  = "black",
+                                 "11-20" = "orange",
+                                 ">20"   = "blue")) +
+  scale_x_continuous(name = "Rank", limits = c(1, max(unis$rank, na.rm = TRUE)),
+                     breaks = c(1, seq(10, max(unis$rank, na.rm = TRUE), by = 10))) +
+  ylab(NULL) +
+  labs(title = "Ranking of Universities by Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks (all ranks)") +
+  theme(
+    axis.text.y = element_text(size = 5),
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "right")
+```
+
+## Figure 2 — University Rankings (alt-view zoomed)
+
+``` {r figure2c, fig.height=5.5, fig.width=9, echo=FALSE}
+# compute span and categories
+unis$span <- unis$margCSU - unis$margCSL + 1
+unis$span_cat <- cut(unis$span,
+                     breaks = c(-Inf, 5, 10, 20, Inf),
+                     labels = c("<=5","6-10","11-20",">20"))
+
+# filter to top 25 and bottom 25 (assumes rank 1 = best)
+top_bottom <- subset(unis, rank <= 25 | rank > (max(rank, na.rm = TRUE) - 25))
+
+# order factor for plotting (so y-axis shows best first at top)
+top_bottom$name <- factor(top_bottom$name,
+                          levels = top_bottom$name[order(top_bottom$rank)])
+
+library(ggplot2)
+ggplot(top_bottom, aes(x = rank, y = reorder(name, rank))) +
+  theme_bw() +
+  geom_errorbar(aes(xmin = margCSL, xmax = margCSU, colour = span_cat),
+                width = 0.4, size = 0.6, show.legend = TRUE) +
+  geom_point(aes(colour = span_cat), size = 0.9, show.legend = TRUE) +
+  scale_colour_manual(name = "Span (ranks)",
+                      values = c("<=5"   = "red",
+                                 "6-10"  = "black",
+                                 "11-20" = "orange",
+                                 ">20"   = "blue")) +
+  scale_x_continuous(name = "Rank", limits = c(1, max(top_bottom$rank, na.rm = TRUE)),
+                     breaks = c(1, seq(10, max(top_bottom$rank, na.rm = TRUE), by = 10))) +
+  ylab(NULL) +
+  labs(title = "Ranking of Universities by Impact Factor",
+       subtitle = "95% marginal confidence sets for ranks (top 25 and bottom 25)") +
+  theme(
+    axis.text.y = element_text(size = 6),
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "right")
+```
+
 
 ## What the Figures Tell Us
 
