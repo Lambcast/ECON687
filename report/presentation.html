@@ -3191,6 +3191,7 @@ code span.vs { color: #4070a0; }
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 
+  <style type="text/css">slide:not(.backdrop):not(.title-slide):after {content: '' !important;}</style>
 
 </head>
 
@@ -3304,7 +3305,7 @@ cat(&quot;Journals matched:&quot;, nrow(jIF), &quot;of 30&quot;)</pre>
 
 <pre >## Journals matched: 30 of 30</pre>
 
-</article></slide><slide class=""><hgroup><h2>Journal Data — Useable form</h2></hgroup><article  id="journal-data-useable-form" class="smaller ">
+</article></slide><slide class=""><hgroup><h2>Journal Data — Usable form</h2></hgroup><article  id="journal-data-usable-form" class="smaller ">
 
 <table class = 'rmdtable'>
 <caption>Top 10 journals by 2011 impact factor</caption>
@@ -3421,7 +3422,7 @@ cat(&quot;Universities:&quot;, nrow(unis), &quot;| Total authors:&quot;, sum(uni
 
 <pre >## Universities: 100 | Total authors: 247804</pre>
 
-</article></slide><slide class=""><hgroup><h2>University Data — Useable form</h2></hgroup><article  id="university-data-useable-form" class="smaller ">
+</article></slide><slide class=""><hgroup><h2>University Data — Usable form</h2></hgroup><article  id="university-data-usable-form" class="smaller ">
 
 <table class = 'rmdtable'>
 <caption>Top 10 universities by average impact factor</caption>
@@ -3504,7 +3505,7 @@ cat(&quot;Universities:&quot;, nrow(unis), &quot;| Total authors:&quot;, sum(uni
 </tr>
 </table>
 
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>descriptive statistics</h2></hgroup><article  id="descriptive-statistics" class="smaller ">
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Descriptive Statistics and Methods</h2></hgroup><article  id="descriptive-statistics-and-methods" class="smaller ">
 
 <!-- Linna: feel free to rename this section header if something fits better -->
 
@@ -3544,83 +3545,104 @@ cat(&quot;Universities:&quot;, nrow(unis), &quot;| Total authors:&quot;, sum(uni
 
 </article></slide><slide class=""><hgroup><h2>Journal Data - Summary Statistics</h2></hgroup><article  id="journal-data---summary-statistics" class="smaller ">
 
-<pre class = 'prettyprint lang-r'>jall &lt;- journalIF %&gt;% filter(!is.na(IF), IF &gt; 0)
-cat(&quot;--- All 231 Valid Journals ---\n&quot;)</pre>
+<div class="columns-2" style="height: 1000px;">
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left">Statistic</th>
+<th align="right">All 231 Journals</th>
+<th align="right">KMS Top 30</th>
+</tr>
+<tr class="odd">
+<td align="left">Mean IF</td>
+<td align="right">1.537</td>
+<td align="right">3.046</td>
+</tr>
+<tr class="even">
+<td align="left">Median IF</td>
+<td align="right">1.222</td>
+<td align="right">2.374</td>
+</tr>
+<tr class="odd">
+<td align="left">SD of IF</td>
+<td align="right">1.335</td>
+<td align="right">2.118</td>
+</tr>
+<tr class="even">
+<td align="left">Mean SE</td>
+<td align="right">NA</td>
+<td align="right">0.276</td>
+</tr>
+<tr class="odd">
+<td align="left">Min IF</td>
+<td align="right">0.014</td>
+<td align="right">0.570</td>
+</tr>
+<tr class="even">
+<td align="left">Max IF</td>
+<td align="right">9.281</td>
+<td align="right">9.281</td>
+</tr>
+</table>
 
-<pre >## --- All 231 Valid Journals ---</pre>
+<div style="break-before: column;">
+<p><strong>Reading the table</strong></p>
 
-<pre class = 'prettyprint lang-r'>cat(&quot;Mean IF:  &quot;, round(mean(jall$IF), 4), &quot;\n&quot;)</pre>
-
-<pre >## Mean IF:   1.5367</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Median IF:&quot;, round(median(jall$IF), 4), &quot;\n&quot;)</pre>
-
-<pre >## Median IF: 1.2224</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;SD of IF: &quot;, round(sd(jall$IF), 4), &quot;\n&quot;)</pre>
-
-<pre >## SD of IF:  1.3347</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Range:    [&quot;, round(min(jall$IF), 4), &quot;,&quot;, round(max(jall$IF), 4), &quot;]\n\n&quot;)</pre>
-
-<pre >## Range:    [ 0.0142 , 9.2812 ]</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;--- KMS Top 30 ---\n&quot;)</pre>
-
-<pre >## --- KMS Top 30 ---</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Mean IF:  &quot;, round(mean(jIF$IF), 4), &quot;\n&quot;)</pre>
-
-<pre >## Mean IF:   3.046</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Median IF:&quot;, round(median(jIF$IF), 4), &quot;\n&quot;)</pre>
-
-<pre >## Median IF: 2.3737</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;SD of IF: &quot;, round(sd(jIF$IF), 4), &quot;\n&quot;)</pre>
-
-<pre >## SD of IF:  2.1183</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Mean SE:  &quot;, round(mean(jIF$SE), 4), &quot;\n&quot;)</pre>
-
-<pre >## Mean SE:   0.2765</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Range:    [&quot;, round(min(jIF$IF), 4), &quot;,&quot;, round(max(jIF$IF), 4), &quot;]\n&quot;)</pre>
-
-<pre >## Range:    [ 0.5697 , 9.2812 ]</pre>
+<ul>
+<li><strong>IF</strong> is the 2011 impact factor, the mean citations per 2008 article</li>
+<li><strong>SE</strong> is the standard error of that mean</li>
+<li>The KMS 30 sample has a higher mean IF than the full set, by construction</li>
+<li>Substantial variance across the metrics, the noise that makes ranks hard to assign</li>
+</ul></div></div>
 
 <!-- Looking at the summary statistics for our journal dataset, the key takeaway is the substantial variance present across the performance metrics. It is exactly this underlying statistical noise that makes assigning a definitive, ordinal rank based purely on point estimates so problematic. -->
 
 </article></slide><slide class=""><hgroup><h2>University Descriptive Statistics</h2></hgroup><article  id="university-descriptive-statistics" class="smaller ">
 
-<pre class = 'prettyprint lang-r'>cat(&quot;--- 100 Universities ---\n&quot;)</pre>
+<div class="columns-2" style="height: 1000px;">
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left">Statistic</th>
+<th align="right">Value</th>
+</tr>
+<tr class="odd">
+<td align="left">Mean IFmean</td>
+<td align="right">11.828</td>
+</tr>
+<tr class="even">
+<td align="left">Median IFmean</td>
+<td align="right">10.044</td>
+</tr>
+<tr class="odd">
+<td align="left">SD of IFmean</td>
+<td align="right">5.963</td>
+</tr>
+<tr class="even">
+<td align="left">Mean IFse</td>
+<td align="right">0.311</td>
+</tr>
+<tr class="odd">
+<td align="left">Total authors</td>
+<td align="right">247804.000</td>
+</tr>
+<tr class="even">
+<td align="left">Min IFmean</td>
+<td align="right">3.524</td>
+</tr>
+<tr class="odd">
+<td align="left">Max IFmean</td>
+<td align="right">27.400</td>
+</tr>
+</table>
 
-<pre >## --- 100 Universities ---</pre>
+<div style="break-before: column;">
+<p><strong>Reading the table</strong></p>
 
-<pre class = 'prettyprint lang-r'>cat(&quot;Mean IFmean:  &quot;, round(mean(unis$IFmean), 4), &quot;\n&quot;)</pre>
-
-<pre >## Mean IFmean:   11.8278</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Median IFmean:&quot;, round(median(unis$IFmean), 4), &quot;\n&quot;)</pre>
-
-<pre >## Median IFmean: 10.0435</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;SD of IFmean: &quot;, round(sd(unis$IFmean), 4), &quot;\n&quot;)</pre>
-
-<pre >## SD of IFmean:  5.9632</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Mean IFse:    &quot;, round(mean(unis$IFse), 4), &quot;\n&quot;)</pre>
-
-<pre >## Mean IFse:     0.3106</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;Total authors:&quot;, sum(unis$n), &quot;\n&quot;)</pre>
-
-<pre >## Total authors: 247804</pre>
-
-<pre class = 'prettyprint lang-r'>cat(&quot;IF range:     [&quot;, round(min(unis$IFmean), 4), &quot;,&quot;,
-                       round(max(unis$IFmean), 4), &quot;]\n&quot;)</pre>
-
-<pre >## IF range:     [ 3.5238 , 27.4003 ]</pre>
+<ul>
+<li><strong>IFmean</strong> is each university’s average article-level impact factor, weighted by author affiliation</li>
+<li><strong>IFse</strong> is the standard error of that average</li>
+<li>The 100 universities are tightly packed around a median IFmean near 10</li>
+<li>The SEs are large enough to blur the boundaries between adjacent ranks</li>
+</ul></div></div>
 
 <!-- As you can see here, our 100 universities are tightly packed around a median score of 10, but the standard errors at the bottom are large enough to blur the lines between them. Just eye-balling this, we can tell there is significant statistical overlap. It’s impossible to just sort these scores 1 through 100. So, how do we actually handle this overlap rigorously? Before I show you the specific formulas, let's look at the overarching strategy we use to process this.-->
 
@@ -3768,7 +3790,7 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
 
 <ul>
 <li>Confidence sets are narrow at the very top and very bottom</li>
-<li>They widen substantially in the middle of the distribution</li>
+<li>They widen in the middle of the distribution</li>
 <li>For journals, JEL is clearly ranked first but much of the middle cannot be separated from several adjacent ranks</li>
 <li>For universities, Chicago and Northwestern sit confidently at the top, but large clusters in the middle are statistically indistinguishable</li>
 </ul>

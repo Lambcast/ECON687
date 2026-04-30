@@ -7,6 +7,7 @@ output:
   ioslides_presentation:
     widescreen: true
     smaller: true
+    css: custom.css
 ---
 
 ```{r setup, include=FALSE}
@@ -140,7 +141,7 @@ jIF <- journalIF %>%
 cat("Journals matched:", nrow(jIF), "of 30")
 ```
 
-## Journal Data — Useable form
+## Journal Data — Usable form
 
 ```{r journal-table, echo=FALSE}
 jIF %>%
@@ -189,7 +190,7 @@ unis <- read.csv(file.path("data", "Repec", "top100unis.csv")) %>%
 cat("Universities:", nrow(unis), "| Total authors:", sum(unis$n))
 ```
 
-## University Data — Useable form
+## University Data — Usable form
 
 ```{r university-table, echo=FALSE}
 unis %>%
@@ -200,7 +201,7 @@ unis %>%
 ```
 
 
-# descriptive statistics
+# Descriptive Statistics and Methods
 <!-- Linna: feel free to rename this section header if something fits better -->
 
 ## The Core Econometric Problem — Defining "True Rank"
@@ -226,36 +227,82 @@ $$r_i = 1 + \sum_{j \neq i} \mathbb{I}(\theta_j > \theta_i)$$
 
 ## Journal Data - Summary Statistics
 
-```{r journal-summary}
-jall <- journalIF %>% filter(!is.na(IF), IF > 0)
-cat("--- All 231 Valid Journals ---\n")
-cat("Mean IF:  ", round(mean(jall$IF), 4), "\n")
-cat("Median IF:", round(median(jall$IF), 4), "\n")
-cat("SD of IF: ", round(sd(jall$IF), 4), "\n")
-cat("Range:    [", round(min(jall$IF), 4), ",", round(max(jall$IF), 4), "]\n\n")
+<div class="columns-2" style="height: 1000px;">
 
-cat("--- KMS Top 30 ---\n")
-cat("Mean IF:  ", round(mean(jIF$IF), 4), "\n")
-cat("Median IF:", round(median(jIF$IF), 4), "\n")
-cat("SD of IF: ", round(sd(jIF$IF), 4), "\n")
-cat("Mean SE:  ", round(mean(jIF$SE), 4), "\n")
-cat("Range:    [", round(min(jIF$IF), 4), ",", round(max(jIF$IF), 4), "]\n")
+```{r journal-summary, echo=FALSE}
+jall <- journalIF %>% filter(!is.na(IF), IF > 0)
+
+journal_stats <- data.frame(
+  Statistic = c("Mean IF", "Median IF", "SD of IF", "Mean SE", "Min IF", "Max IF"),
+  `All 231 Journals` = c(
+    round(mean(jall$IF), 3),
+    round(median(jall$IF), 3),
+    round(sd(jall$IF), 3),
+    NA,
+    round(min(jall$IF), 3),
+    round(max(jall$IF), 3)
+  ),
+  `KMS Top 30` = c(
+    round(mean(jIF$IF), 3),
+    round(median(jIF$IF), 3),
+    round(sd(jIF$IF), 3),
+    round(mean(jIF$SE), 3),
+    round(min(jIF$IF), 3),
+    round(max(jIF$IF), 3)
+  ),
+  check.names = FALSE
+)
+
+knitr::kable(journal_stats)
 ```
+<div style="break-before: column;">
+
+**Reading the table**
+
+- **IF** is the 2011 impact factor, the mean citations per 2008 article
+- **SE** is the standard error of that mean
+- The KMS 30 sample has a higher mean IF than the full set, by construction
+- Substantial variance across the metrics, the noise that makes ranks hard to assign
+
+</div>
+
+</div>
 
 <!-- Looking at the summary statistics for our journal dataset, the key takeaway is the substantial variance present across the performance metrics. It is exactly this underlying statistical noise that makes assigning a definitive, ordinal rank based purely on point estimates so problematic. -->
 
 ## University Descriptive Statistics
 
-```{r university-summary}
-cat("--- 100 Universities ---\n")
-cat("Mean IFmean:  ", round(mean(unis$IFmean), 4), "\n")
-cat("Median IFmean:", round(median(unis$IFmean), 4), "\n")
-cat("SD of IFmean: ", round(sd(unis$IFmean), 4), "\n")
-cat("Mean IFse:    ", round(mean(unis$IFse), 4), "\n")
-cat("Total authors:", sum(unis$n), "\n")
-cat("IF range:     [", round(min(unis$IFmean), 4), ",",
-                       round(max(unis$IFmean), 4), "]\n")
+<div class="columns-2" style="height: 1000px;">
+
+```{r university-summary, echo=FALSE}
+uni_stats <- data.frame(
+  Statistic = c("Mean IFmean", "Median IFmean", "SD of IFmean",
+                "Mean IFse", "Total authors", "Min IFmean", "Max IFmean"),
+  Value = c(
+    round(mean(unis$IFmean), 3),
+    round(median(unis$IFmean), 3),
+    round(sd(unis$IFmean), 3),
+    round(mean(unis$IFse), 3),
+    sum(unis$n),
+    round(min(unis$IFmean), 3),
+    round(max(unis$IFmean), 3)
+  )
+)
+
+knitr::kable(uni_stats)
 ```
+<div style="break-before: column;">
+
+**Reading the table**
+
+- **IFmean** is each university's average article-level impact factor, weighted by author affiliation
+- **IFse** is the standard error of that average
+- The 100 universities are tightly packed around a median IFmean near 10
+- The SEs are large enough to blur the boundaries between adjacent ranks
+
+</div>
+
+</div>
 
 <!-- As you can see here, our 100 universities are tightly packed around a median score of 10, but the standard errors at the bottom are large enough to blur the lines between them. Just eye-balling this, we can tell there is significant statistical overlap. It’s impossible to just sort these scores 1 through 100. So, how do we actually handle this overlap rigorously? Before I show you the specific formulas, let's look at the overarching strategy we use to process this.-->
 
@@ -431,7 +478,7 @@ ggplot(unis, aes(x = rank, y = reorder(name, rank))) +
 Both figures show the same pattern the paper describes:
 
 - Confidence sets are narrow at the very top and very bottom
-- They widen substantially in the middle of the distribution
+- They widen in the middle of the distribution
 - For journals, JEL is clearly ranked first but much of the middle cannot be
   separated from several adjacent ranks
 - For universities, Chicago and Northwestern sit confidently at the top,

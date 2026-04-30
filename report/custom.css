@@ -1,0 +1,3 @@
+slide:not(.backdrop):not(.title-slide):after {
+  content: '' !important;
+}
