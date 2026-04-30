@@ -70,8 +70,9 @@ The method is implemented in `csranks`, an R package written by the authors.
 
 **Journals** — 30 economics journals ranked by 2011 impact factor:
 
-- 10 of the 30 cannot be statistically distinguished from the top 5
-- Only 1 journal can be ruled out of the bottom 25
+- Any of 10 different journals could plausibly be in the top 5
+- The middle of the ranking has confidence bars 8 to 12 ranks wide
+- At the bottom, only the last few journals are locked in place
 
 **Universities** — 100 universities ranked by average publication impact factor:
 
